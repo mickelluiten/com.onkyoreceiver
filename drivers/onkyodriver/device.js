@@ -3,6 +3,8 @@
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
 
+const getCapabilityOptionsValues = this.getCapabilityOptions('volume_set');
+
 class onkyoDevice extends Homey.Device {
 
   onInit() {
@@ -13,8 +15,9 @@ class onkyoDevice extends Homey.Device {
       this.log(`IP Adress:   ${ManagerSettings.get('ipAddressSet')}`);
       this.log(`Max Volume:  ${ManagerSettings.get('maxVolumeSet')}`);
       this.log(`Volume Step: ${ManagerSettings.get('volumeStepSet')}`);
+      this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
     });
-    // this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
+    this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
   }
 
   getDeviceId() {
@@ -24,13 +27,10 @@ class onkyoDevice extends Homey.Device {
   // Setting the maxvolume setting on volume_set capability to scale the slider and refresh device
   setSettingsVolumeSliderMax(maxVolumeValue) {
     this.setUnavailable();
-    const caboptlist = this.getCapabilityOptions('volume_set');
-    this.log(caboptlist);
-    // this.setCapabilityOptions('volume_set.zone1', {
-    //  min: 0, max: maxVolumeValue, step: 1, decimals: 0,
-    // });
-    // this.setCapabilityOptions('volume_set.zone2', options);
-    // this.setCapabilityOptions('volume_set.zone3', options);
+    this.log(getCapabilityOptionsValues);
+    this.setCapabilityOptions('volume_set', {
+    min: 0, max: maxVolumeValue, step: 1, decimals: 0,
+    });;
     this.setAvailable();
   }
 
