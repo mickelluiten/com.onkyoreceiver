@@ -69,7 +69,7 @@ class onkyoDriver extends Homey.Driver {
       name: 'Main Zone',
       capabilitiesOptions: {
         volume_set: {
-          min: 0, max: Number(ManagerSettings.get('maxVolumeSet')), step: 1, decimals: 0, type: 'number',
+          min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0, type: 'number',
         },
       },
       capabilities: [
@@ -88,7 +88,7 @@ class onkyoDriver extends Homey.Driver {
       name: 'Zone 2',
       capabilitiesOptions: {
         volume_set: {
-          min: 0, max: Number(ManagerSettings.get('maxVolumeSet')), step: 1, decimals: 0, type: 'number',
+          min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0, type: 'number',
         },
       },
       capabilities: [
@@ -107,7 +107,7 @@ class onkyoDriver extends Homey.Driver {
       name: 'Zone 3',
       capabilitiesOptions: {
         volume_set: {
-          min: 0, max: Number(ManagerSettings.get('maxVolumeSet')), step: 1, decimals: 0, type: 'number',
+          min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0, type: 'number',
         },
       },
       capabilities: [

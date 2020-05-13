@@ -25,6 +25,7 @@ class onkyoDevice extends Homey.Device {
   // Setting the maxvolume setting on volume_set capability to scale the slider and refresh device
   setSettingsVolumeSliderMax(maxVolumeValue) {
     this.setUnavailable();
+    this.log(`TEST:  ${this.getCapabilityOptions('volume_set')}`);
     this.setCapabilityOptions('volume_set', {
       min: 0, max: Number(maxVolumeValue), step: 1, decimals: 0,
     });
