@@ -1,0 +1,15 @@
+<script>
+
+    Homey.setTitle(__('pair.start.title'));
+
+    Homey.on('errors', function(message, callback){
+    Homey.alert(message); 
+    callback(null, 'ERROR');
+    Homey.done();
+    });    
+    
+    Homey.on('continue', function (success, callback) {
+        Homey.showView('list_devices');
+    });
+
+</script>

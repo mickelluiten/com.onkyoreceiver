@@ -1,0 +1,71 @@
+{
+  "id": "com.onkyoreceiver",
+  "version": "3.0.0",
+  "compatibility": ">=3.0.0",
+  "sdk": 2,
+  "brandColor": "#8142f5",
+  "source": "https://github.com/mickelluiten/com.onkyo",
+  "name": {
+    "en": "Onkyo Receiver"
+  },
+  "dependencies": {
+    "net": "*"
+  },
+  "description": {
+    "en": "Control your Onkyo receiver with Homey"
+  },
+  "category": [
+    "appliances"
+  ],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Mickel Luiten",
+    "email": "mickelluiten@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Chamid Media",
+        "email": "info@chamidmedia.nl"
+      },
+      {
+        "name": "Mickel Luiten",
+        "email": "mickelluiten@gmail.com"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "id": "onkyodriver",
+      "name": {
+        "en": "onkyoDriver"
+      },
+      "class": "amplifier",
+      "capabilities": [],
+      "images": {
+        "large": "/drivers/onkyodriver/assets/images/large.png",
+        "small": "/drivers/onkyodriver/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "onkyodriver",
+  "name": {
+    "en": "onkyoDriver"
+  },
+  "class": "amplifier",
+  "capabilities": [ 
+  ],
+  "images": {
+    "large": "/drivers/onkyodriver/assets/images/large.png",
+    "small": "/drivers/onkyodriver/assets/images/small.png"
+  },
+  "pair": [
+{
+    "id": "start"
+},
+{
+    "id": "list_devices",
+    "template": "list_devices",
+    "navigation": {
+        "next": "add_devices"
+    }
+},
+{
+    "id": "add_devices",
+    "template": "add_devices"
+}
+]
+}
