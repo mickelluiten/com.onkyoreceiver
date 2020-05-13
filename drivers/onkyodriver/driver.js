@@ -68,18 +68,18 @@ class onkyoDriver extends Homey.Driver {
     const devices = [{
       name: 'Main Zone',
       capabilitiesOptions: {
-        'volume_set.zone1': {
+        'volume_set': {
           min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0,
         },
       },
       capabilities: [
-        'volume_mute.zone1',
-        'volume_set.zone1',
-        'onoff.zone1',
-        'volume_down.zone1.',
-        'volume_mute.zone1',
-        'volume_up.zone1',
-        'input_changed.zone1'],
+        'volume_mute',
+        'volume_set',
+        'onoff',
+        'volume_down.',
+        'volume_mute',
+        'volume_up',
+        'input_changed'],
       data: {
         id: 'zone1',
       },
@@ -87,18 +87,18 @@ class onkyoDriver extends Homey.Driver {
     {
       name: 'Zone 2',
       capabilitiesOptions: {
-        'volume_set.zone2': {
+        'volume_set': {
           min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0,
         },
       },
       capabilities: [
-        'volume_mute.zone2',
-        'volume_set.zone2',
-        'onoff.zone2',
-        'volume_down.zone2.',
-        'volume_mute.zone2',
-        'volume_up.zone2',
-        'input_changed.zone2'],
+        'volume_mute',
+        'volume_set',
+        'onoff',
+        'volume_down.',
+        'volume_mute',
+        'volume_up',
+        'input_changed'],
       data: {
         id: 'zone2',
       },
@@ -106,18 +106,18 @@ class onkyoDriver extends Homey.Driver {
     {
       name: 'Zone 3',
       capabilitiesOptions: {
-        'volume_set.zone3': {
+        'volume_set': {
           min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0,
         },
       },
       capabilities: [
-        'volume_mute.zone3',
-        'volume_set.zone3',
-        'onoff.zone3',
-        'volume_down.zone3.',
-        'volume_mute.zone3',
-        'volume_up.zone3',
-        'input_changed.zone3'],
+        'volume_mute',
+        'volume_set',
+        'onoff',
+        'volume_down.',
+        'volume_mute',
+        'volume_up',
+        'input_changed'],
       data: {
         id: 'zone3',
       },
