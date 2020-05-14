@@ -4,7 +4,12 @@
     "en": "onkyoDriver"
   },
   "class": "amplifier",
-  "capabilities": [ 
+  "capabilities": [
+    "onoff",
+    "volume_set",
+    "volume_up",
+    "volume_mute",
+    "volume_down"
   ],
   "images": {
     "large": "/drivers/onkyodriver/assets/images/large.png",

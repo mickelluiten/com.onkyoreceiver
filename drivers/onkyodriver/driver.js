@@ -67,57 +67,18 @@ class onkyoDriver extends Homey.Driver {
     // create the devices data property.
     const devices = [{
       name: 'Main Zone',
-      capabilitiesOptions: {
-        volume_set: {
-          min: 0, max: 0.5,
-        },
-      },
-      capabilities: [
-        'volume_mute',
-        'volume_set',
-        'onoff',
-        'volume_down.',
-        'volume_mute',
-        'volume_up',
-        'input_changed'],
       data: {
         id: 'zone1',
       },
     },
     {
       name: 'Zone 2',
-      capabilitiesOptions: {
-        volume_set: {
-          min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0, type: 'number',
-        },
-      },
-      capabilities: [
-        'volume_mute',
-        'volume_set',
-        'onoff',
-        'volume_down.',
-        'volume_mute',
-        'volume_up',
-        'input_changed'],
       data: {
         id: 'zone2',
       },
     },
     {
       name: 'Zone 3',
-      capabilitiesOptions: {
-        volume_set: {
-          min: 0, max: ManagerSettings.get('maxVolumeSet'), step: 1, decimals: 0, type: 'number',
-        },
-      },
-      capabilities: [
-        'volume_mute',
-        'volume_set',
-        'onoff',
-        'volume_down.',
-        'volume_mute',
-        'volume_up',
-        'input_changed'],
       data: {
         id: 'zone3',
       },
