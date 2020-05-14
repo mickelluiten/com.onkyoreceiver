@@ -1,10 +1,10 @@
 {
-  "id": "com.onkyoreceiver",
+  "id": "com.onkyo",
   "version": "3.0.0",
-  "compatibility": ">=3.0.0",
+  "compatibility": ">=3.1.0",
   "sdk": 2,
   "brandColor": "#8142f5",
-  "source": "https://github.com/mickelluiten/com.onkyo",
+  "source": "https://github.com/mickelluiten/com.onkyoreceiver",
   "name": {
     "en": "Onkyo Receiver"
   },
