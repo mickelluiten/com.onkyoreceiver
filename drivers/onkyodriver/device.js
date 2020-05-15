@@ -3,13 +3,10 @@
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
-const net = require('net');
-const {OnkyoCmds, Onkyo} = require('onkyo.js');
-const onkyo = new Onkyo({ip: '196.168.0.10'});
 
-let onkyoSocket = {};
+// let onkyoSocket = {};
 // eslint-disable-next-line no-unused-vars
-let onkyoSocketConnectionExisted = false;
+// let onkyoSocketConnectionExisted = false;
 
 class onkyoDevice extends Homey.Device {
 
@@ -31,8 +28,8 @@ class onkyoDevice extends Homey.Device {
       this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
     });
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
-    this.onkyoSocketConnectionRestartOrPoll();
-    this.socketConnection(); // start socket
+    // this.onkyoSocketConnectionRestartOrPoll();
+    // this.socketConnection(); // start socket
   }
 
   // when device is addded
@@ -60,7 +57,7 @@ class onkyoDevice extends Homey.Device {
     await this.setAvailable();
   }
 
-
+  /*
   socketConnection() {
     onkyoSocket = new net.Socket();
     onkyoSocket.connect(60128, ManagerSettings.get('ipAddressSet'), () => {
@@ -109,6 +106,7 @@ class onkyoDevice extends Homey.Device {
       }
     }, 10000);
   }
+  */
 
 
   // Extract command from receiver
