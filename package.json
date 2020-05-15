@@ -10,7 +10,5 @@
   "engines": {
     "node": ">=12.16.1"
   },
-  "dependencies": {
-    "onkyo.js": "^0.6.1"
-  }
+  "dependencies": {}
 }

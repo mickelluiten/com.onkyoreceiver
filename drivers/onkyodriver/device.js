@@ -3,7 +3,6 @@
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
-const {OnkyoCmds, Onkyo} = require('onkyo.js');
 const net = require('net');
 
 let onkyoSocket = {};
@@ -58,6 +57,7 @@ class onkyoDevice extends Homey.Device {
     });
     await this.setAvailable();
   }
+
 
   socketConnection() {
     onkyoSocket = new net.Socket();
@@ -133,8 +133,10 @@ class onkyoDevice extends Homey.Device {
       case 'volume_mute':
         if (valueObj[valueName]) {
           this.log('Sending MuteON command to receiver');
+          // onkyo.audioMute();
         } else {
           this.log('Sending MuteOFF command to receiver');
+          // onkyo.audioUnMute();
         }
         break;
 
