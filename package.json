@@ -7,10 +7,10 @@
     "eslint-config-athom": "^2.1.0",
     "homey": "^2.3.3"
   },
-  "dependencies": {
-    "onkyo.js": "^0.6.1"
-  },
   "engines": {
     "node": ">=12.16.1"
+  },
+  "dependencies": {
+    "eiscp": "git://github.com/tillbaks/node-eiscp.git"
   }
 }
