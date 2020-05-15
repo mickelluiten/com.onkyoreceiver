@@ -10,5 +10,8 @@
   "engines": {
     "node": ">=12.16.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "eiscp": "^0.2.0",
+    "eiscp": "eiscp"
+  }
 }
