@@ -1,8 +1,13 @@
+
 'use strict';
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
+const net = require('net');
+
+let onkyoSocket = {};
 // eslint-disable-next-line no-unused-vars
+let onkyoSocketConnectionExisted = false;
 
 class onkyoDevice extends Homey.Device {
 
@@ -24,6 +29,8 @@ class onkyoDevice extends Homey.Device {
       this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
     });
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
+    this.onkyoSocketConnectionRestartOrPoll();
+    this.socketConnection(); // start socket
   }
 
   // when device is addded
@@ -50,6 +57,56 @@ class onkyoDevice extends Homey.Device {
     });
     await this.setAvailable();
   }
+
+  socketConnection() {
+    onkyoSocket = new net.Socket();
+    onkyoSocket.connect(60128, ManagerSettings.get('ipAddressSet'), () => {
+      this.log(`Polling device with IP : ${ManagerSettings.get('ipAddressSet')}`);
+      onkyoSocketConnectionExisted = true;
+      this.setAvailable();
+      onkyoSocket.setTimeout(65000);
+    });
+
+    // socket error
+    onkyoSocket.on('error', err => {
+      this.log(`Connection error: ${err}`);
+      onkyoSocket.destroy();
+    });
+
+    // socket timeout
+    onkyoSocket.on('timeout', () => {
+      this.log('Connection timed out.');
+      onkyoSocket.destroy();
+    });
+
+    // socket close
+    onkyoSocket.on('close', () => {
+      this.log(`Connection closed to IP: ${ManagerSettings.get('ipAddressSet')}`);
+    });
+
+    // socket data(in)
+    onkyoSocket.on('data', data => {
+      let payLoad = this.eiscpPacket(data);
+      payLoad = data.toString().split('!1');
+      payLoad = JSON.stringify(payLoad[1]);
+      payLoad = payLoad.split('\\u');
+      payLoad = payLoad[0].substring(1);
+      this.log(`Received data from device : ${payLoad}`);
+    });
+  }
+
+  onkyoSocketConnectionRestartOrPoll() {
+    // eslint-disable-next-line no-unused-vars
+    const socketTimer = setInterval(() => {
+      if (onkyoSocketConnectionExisted) {
+        if (onkyoSocket.destroyed && onkyoSocket.connecting !== true) {
+          this.setUnavailable();
+          this.socketConnection(ManagerSettings.get('ipAddressSet'));
+        }
+      }
+    }, 10000);
+  }
+
 
   // Extract command from receiver
   eiscpPacket(cmd) {

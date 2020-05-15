@@ -11,6 +11,5 @@
     "node": ">=12.16.1"
   },
   "dependencies": {
-    "eiscp": "git://github.com/tillbaks/node-eiscp.git"
   }
 }
