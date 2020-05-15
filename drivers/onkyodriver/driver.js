@@ -68,7 +68,7 @@ class onkyoDriver extends Homey.Driver {
     const devices = [{
       name: 'Main Zone',
       data: {
-        id: 'zone1',
+        id: 'main',
       },
     },
     {

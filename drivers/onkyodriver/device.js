@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 
 'use strict';
 
@@ -31,11 +32,14 @@ class onkyoDevice extends Homey.Device {
     });
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
 
-    eiscp.on('debug', msg => {
-      this.log(`DEBUG: ${msg}`);
+    eiscp.on('data', msg => {
+      msg = JSON.stringify(msg);
+      console.log(`Incoming message from receiver: ${msg}`);
     });
-
-    eiscp.connect({ host: ManagerSettings.get('ipAddressSet') });
+    // connect to receiver main zone is always present.
+    if (this.getDeviceId() === 'main') {
+      eiscp.connect({ host: ManagerSettings.get('ipAddressSet') });
+    }
   }
 
 
@@ -64,66 +68,6 @@ class onkyoDevice extends Homey.Device {
     await this.setAvailable();
   }
 
-  /*
-  socketConnection() {
-    onkyoSocket = new net.Socket();
-    onkyoSocket.connect(60128, ManagerSettings.get('ipAddressSet'), () => {
-      this.log(`Polling device with IP : ${ManagerSettings.get('ipAddressSet')}`);
-      onkyoSocketConnectionExisted = true;
-      this.setAvailable();
-      onkyoSocket.setTimeout(65000);
-    });
-
-    // socket error
-    onkyoSocket.on('error', err => {
-      this.log(`Connection error: ${err}`);
-      onkyoSocket.destroy();
-    });
-
-    // socket timeout
-    onkyoSocket.on('timeout', () => {
-      this.log('Connection timed out.');
-      onkyoSocket.destroy();
-    });
-
-    // socket close
-    onkyoSocket.on('close', () => {
-      this.log(`Connection closed to IP: ${ManagerSettings.get('ipAddressSet')}`);
-    });
-
-    // socket data(in)
-    onkyoSocket.on('data', data => {
-      let payLoad = this.eiscpPacket(data);
-      payLoad = data.toString().split('!1');
-      payLoad = JSON.stringify(payLoad[1]);
-      payLoad = payLoad.split('\\u');
-      payLoad = payLoad[0].substring(1);
-      this.log(`Received data from device : ${payLoad}`);
-    });
-  }
-
-  onkyoSocketConnectionRestartOrPoll() {
-    // eslint-disable-next-line no-unused-vars
-    const socketTimer = setInterval(() => {
-      if (onkyoSocketConnectionExisted) {
-        if (onkyoSocket.destroyed && onkyoSocket.connecting !== true) {
-          this.setUnavailable();
-          this.socketConnection(ManagerSettings.get('ipAddressSet'));
-        }
-      }
-    }, 10000);
-  }
-  */
-
-
-  // Extract command from receiver
-  eiscpPacket(cmd) {
-    const cmdLength = cmd.length + 1;
-    const code = String.fromCharCode(cmdLength);
-    const line = `ISCP\x00\x00\x00\x10\x00\x00\x00${code}\x01\x00\x00\x00${cmd}\x0D`;
-    return line;
-  }
-
   // CapabilityListener to send command to receiver.
   async sendDeviceStateToReceiver(valueObj, deviceId) {
     const valueName = Object.keys(valueObj);
@@ -140,10 +84,10 @@ class onkyoDevice extends Homey.Device {
       case 'volume_mute':
         if (valueObj[valueName]) {
           this.log('Sending MuteON command to receiver');
-          // onkyo.audioMute();
+          eiscp.command(`${deviceId}.muting=on`);
         } else {
           this.log('Sending MuteOFF command to receiver');
-          // onkyo.audioUnMute();
+          eiscp.command(`${deviceId}.muting=off`);
         }
         break;
 
