@@ -3,6 +3,7 @@
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
+const {OnkyoCmds, Onkyo} = require('onkyo.js');
 const net = require('net');
 
 let onkyoSocket = {};
