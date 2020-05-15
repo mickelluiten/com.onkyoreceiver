@@ -2,6 +2,7 @@
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
+// eslint-disable-next-line no-unused-vars
 
 class onkyoDevice extends Homey.Device {
 
