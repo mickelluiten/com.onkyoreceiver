@@ -4,6 +4,8 @@
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
 const net = require('net');
+const {OnkyoCmds, Onkyo} = require('onkyo.js');
+const onkyo = new Onkyo({ip: '196.168.0.10'});
 
 let onkyoSocket = {};
 // eslint-disable-next-line no-unused-vars
