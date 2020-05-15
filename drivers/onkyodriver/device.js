@@ -3,6 +3,8 @@
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
+const eiscp = require('eiscp');
+
 
 // let onkyoSocket = {};
 // eslint-disable-next-line no-unused-vars
@@ -28,9 +30,14 @@ class onkyoDevice extends Homey.Device {
       this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
     });
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
-    // this.onkyoSocketConnectionRestartOrPoll();
-    // this.socketConnection(); // start socket
+
+    eiscp.on('debug', msg => {
+      this.log(`DEBUG: ${msg}`);
+    });
+
+    eiscp.connect({ host: ManagerSettings.get('ipAddressSet') });
   }
+
 
   // when device is addded
   onAdded() {

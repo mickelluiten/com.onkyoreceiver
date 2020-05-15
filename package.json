@@ -12,6 +12,5 @@
   },
   "dependencies": {
     "eiscp": "^0.2.0",
-    "eiscp": "eiscp"
   }
 }
