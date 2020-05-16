@@ -1,10 +1,11 @@
-/* eslint-disable no-console */
 
 'use strict';
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
 const eiscp = require('eiscp');
+
+// keep a list of devices in memory
 
 class onkyoDevice extends Homey.Device {
 
@@ -19,7 +20,7 @@ class onkyoDevice extends Homey.Device {
 
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
 
-    // Main zone need to be presents.
+    // Main zone needs always there.
     if (this.getDeviceId() === 'main') {
       // register a listener for changes in de manager settingss.
       ManagerSettings.on('set', data => {
