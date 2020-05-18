@@ -10,7 +10,7 @@ const eiscp = require('eiscp');
 class onkyoDevice extends Homey.Device {
 
   async onInit() {
-    this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`)
+    this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
 
     // rRegister a listener for multiple capability change event
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up'], valueObj => {
@@ -22,15 +22,6 @@ class onkyoDevice extends Homey.Device {
 
     // Main zone needs always there.
     if (this.getDeviceId() === 'main') {
-      eiscp.get_commands('zone3', (err, cmds) => {
-        console.log(cmds);
-        cmds.forEach(cmd => {
-          console.log(cmd);
-          eiscp.get_command(cmd, (err, values) => {
-            console.log(values);
-          });
-        });
-      });
       // register a listener for changes in de manager settingss.
       ManagerSettings.on('set', data => {
         this.log('Manager setting is changed');
