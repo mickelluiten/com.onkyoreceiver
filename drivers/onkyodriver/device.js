@@ -1,16 +1,16 @@
+/* eslint-disable max-len */
 
 'use strict';
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
+const { ManagerDrivers } = require('homey');
 const eiscp = require('eiscp');
-
-// keep a list of devices in memory
 
 class onkyoDevice extends Homey.Device {
 
   async onInit() {
-    this.log(`Device init: name: ${this.getName()}`);
+    this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
 
     // rRegister a listener for multiple capability change event
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up'], valueObj => {
@@ -38,47 +38,11 @@ class onkyoDevice extends Homey.Device {
       }
       eiscp.on('data', msg => {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
-        this.receiveDeviceStateFromReceiver(msg, this.getDeviceId());
+        const onkyoCmdInputs = Object.values(msg);
+        this.receiveDeviceStateFromReceiver(onkyoCmdInputs[0], onkyoCmdInputs[1], onkyoCmdInputs[2]);
       });
     }
   }
-
-  // Receive from receiver for setting the capabiltysvalues.
-  async receiveDeviceStateFromReceiver(msg, deviceId) {
-    const onkyoCmdInputs = Object.values(msg);
-    this.log(`ZoneReceiver : ${onkyoCmdInputs[0]} --- ZoneDevice: ${deviceId}`);
-    switch (onkyoCmdInputs[1]) {
-      case 'power':
-        if (onkyoCmdInputs[2] === 'on') {
-          this.log(`Set powerON on devicecard: ${deviceId}`);
-          this.setCapabilityValue('onoff', true);
-        } else {
-          this.log(`Set powerOFF on devicecard: ${deviceId}`);
-          this.setCapabilityValue('onoff', false);
-        }
-        break;
-
-      case 'muting':
-        if (onkyoCmdInputs[2] === 'on') {
-          this.log(`Set MuteON on devicecard: ${deviceId}`);
-          this.setCapabilityValue('volume_mute', true);
-        } else {
-          this.log(`Set MuteOFF on devicecard: ${deviceId}`);
-          this.setCapabilityValue('volume_mute', false);
-        }
-        break;
-
-      case 'volume':
-        this.log(`Changing volume on devicecard ${deviceId}`);
-        this.log(`Volume is: ${onkyoCmdInputs[2]}`);
-        this.setCapabilityValue('volume_set', onkyoCmdInputs[2]);
-        break;
-
-      default: this.log('Not defined change command');
-    }
-    // }
-  }
-
 
   // when device is addded
   onAdded() {
@@ -105,14 +69,13 @@ class onkyoDevice extends Homey.Device {
     await this.setAvailable();
   }
 
-
   // CapabilityListener to send command to receiver.
   async sendDeviceStateToReceiver(valueObj, deviceId) {
     const valueName = Object.keys(valueObj);
     this.log(`Received state change for deviceID: ${deviceId} -- capabilty: ${valueName[0]} -- value: ${valueObj[valueName]}`);
     const currentVolume = this.getCapabilityValue('volume_set');
-    const volumeDown = currentVolume - ManagerSettings.get('volumeStepSet');
-    const volumeUp = currentVolume + ManagerSettings.get('volumeStepSet');
+    const volumeDown = Number(currentVolume) - Number(ManagerSettings.get('volumeStepSet'));
+    const volumeUp = Number(currentVolume) + Number(ManagerSettings.get('volumeStepSet'));
     switch (valueName[0]) {
       case 'onoff':
         if (valueObj[valueName]) {
@@ -138,6 +101,8 @@ class onkyoDevice extends Homey.Device {
         this.log(`Sending VolumeUP command to receiver for ${deviceId}`);
         if (volumeUp < ManagerSettings.get('maxVolumeSet')) {
           eiscp.command(`${deviceId}.volume=${volumeUp}`);
+        } else {
+          this.log('Maximum volume reached');
         }
         break;
 
@@ -151,6 +116,40 @@ class onkyoDevice extends Homey.Device {
       case 'volume_set':
         this.log(`Sending VolumeChANGE command to receiver for ${deviceId}`);
         eiscp.command(`${deviceId}.volume=${valueObj[valueName]}`);
+        break;
+
+      default: this.log('Not defined change command');
+    }
+  }
+
+  // Receive from receiver for setting the capabiltysvalues.
+  async receiveDeviceStateFromReceiver(device, command, argument) {
+    const driver = ManagerDrivers.getDriver('onkyodriver');
+    const deviceState = driver.getDevice({ id: device });
+    switch (command) {
+      case 'power':
+        if (argument === 'on') {
+          this.log(`Set powerON on devicecard: ${device}`);
+          deviceState.setCapabilityValue('onoff', true);
+        } else {
+          this.log(`Set powerOFF on devicecard: ${device}`);
+          deviceState.setCapabilityValue('onoff', false);
+        }
+        break;
+
+      case 'muting':
+        if (argument === 'on') {
+          this.log(`Set MuteON on devicecard: ${device}`);
+          deviceState.setCapabilityValue('volume_mute', true);
+        } else {
+          this.log(`Set MuteOFF on devicecard: ${device}`);
+          deviceState.setCapabilityValue('volume_mute', false);
+        }
+        break;
+
+      case 'volume':
+        this.log(`Changing volume on devicecard ${device}`);
+        deviceState.setCapabilityValue('volume_set', argument);
         break;
 
       default: this.log('Not defined change command');
