@@ -13,7 +13,7 @@ class onkyoDevice extends Homey.Device {
     this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
 
     // rRegister a listener for multiple capability change event
-    this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up'], valueObj => {
+    this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up', 'inputset'], valueObj => {
       this.sendDeviceStateToReceiver(valueObj, this.getDeviceId());
       return Promise.resolve();
     }, 500);
@@ -52,6 +52,10 @@ class onkyoDevice extends Homey.Device {
   // when device is deleted
   onDeleted() {
     this.log(`Device "${this.getName()}" is deleted`);
+    // when deviceard main is deleted stop socket
+    if (this.getDeviceId() === 'main') {
+      eiscp.close();
+    }
   }
 
   // get the device ID
@@ -118,6 +122,11 @@ class onkyoDevice extends Homey.Device {
         eiscp.command(`${deviceId}.volume=${valueObj[valueName]}`);
         break;
 
+      case 'inputset':
+        this.log(`Sending InputSet command to reveiver for ${deviceId}`);
+        // eiscp.command(`${deviceId}.selector=${valueObj[valueName]}`);
+        break;
+
       default: this.log('Not defined change command');
     }
   }
@@ -150,6 +159,11 @@ class onkyoDevice extends Homey.Device {
       case 'volume':
         this.log(`Changing volume on devicecard ${device}`);
         deviceState.setCapabilityValue('volume_set', argument);
+        break;
+
+      case 'selector':
+        this.log(`Changing input on devicecard ${device}`);
+        deviceState.setCapabilityValue('input_set', argument);
         break;
 
       default: this.log('Not defined change command');
