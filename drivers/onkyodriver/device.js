@@ -14,7 +14,7 @@ class onkyoDevice extends Homey.Device {
 
     // rRegister a listener for multiple capability change event
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up', 'inputset'], valueObj => {
-      this.sendDeviceStateToReceiver(valueObj, this.getDeviceId());
+      this.setDeviceStateToReceiver(valueObj, this.getDeviceId());
       return Promise.resolve();
     }, 500);
 
@@ -39,7 +39,7 @@ class onkyoDevice extends Homey.Device {
       eiscp.on('data', msg => {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
         const onkyoCmdInputs = Object.values(msg);
-        this.receiveDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
+        this.getDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
       });
       eiscp.on('close', msg => {
         this.log('Closing connection to receiver');
@@ -77,7 +77,7 @@ class onkyoDevice extends Homey.Device {
   }
 
   // CapabilityListener to send command to receiver.
-  async sendDeviceStateToReceiver(valueObj, deviceId) {
+  async setDeviceStateToReceiver(valueObj, deviceId) {
     const valueName = Object.keys(valueObj);
     this.log(`Received state change for deviceID: ${deviceId} -- capabilty: ${valueName[0]} -- value: ${valueObj[valueName]}`);
     const currentVolume = this.getCapabilityValue('volume_set');
@@ -88,6 +88,7 @@ class onkyoDevice extends Homey.Device {
         if (valueObj[valueName]) {
           this.log(`Sending PowerON command to receiver for ${deviceId}`);
           eiscp.command(`${deviceId}.power=on`);
+          this.getReceiverstate();
         } else {
           this.log(`Sending PowerOFF command to receiver for ${deviceId}`);
           eiscp.command(`${deviceId}.power=standby`);
@@ -134,8 +135,17 @@ class onkyoDevice extends Homey.Device {
     }
   }
 
+  async getReceiverstate() {
+    eiscp.command('main.selector=query');
+    eiscp.command('main.volume=query');
+    eiscp.command('zone2.selector=query');
+    eiscp.command('zone2.volume=query');
+    eiscp.command('zone3.selector=query');
+    eiscp.command('zone3.volume=query');
+  }
+
   // Receive from receiver for setting the capabiltysvalues.
-  async receiveDeviceStateFromReceiver(device, command, argument, eiscpcommand) {
+  async getDeviceStateFromReceiver(device, command, argument, eiscpcommand) {
     const driver = ManagerDrivers.getDriver('onkyodriver');
     const deviceState = driver.getDevice({ id: device });
     if (typeof eiscpcommand !== 'undefined') {
@@ -143,35 +153,37 @@ class onkyoDevice extends Homey.Device {
         switch (command) {
           case 'power':
             if (argument === 'on') {
-              this.log(`Set powerON on devicecard: ${device} -- command: ${eiscpcommand}`);
+              this.log(`Set powerON on devicecard: ${device}`);
               deviceState.setCapabilityValue('onoff', true);
             } else {
-              this.log(`Set powerOFF on devicecard: ${device} -- command: ${eiscpcommand}`);
+              this.log(`Set powerOFF on devicecard: ${device}`);
               deviceState.setCapabilityValue('onoff', false);
             }
             break;
 
           case 'muting':
             if (argument === 'on') {
-              this.log(`Set MuteON on devicecard: ${device}-- command: ${eiscpcommand}`);
+              this.log(`Set MuteON on devicecard: ${device}`);
               deviceState.setCapabilityValue('volume_mute', true);
             } else {
-              this.log(`Set MuteOFF on devicecard: ${device}-- command: ${eiscpcommand}`);
+              this.log(`Set MuteOFF on devicecard: ${device}`);
               deviceState.setCapabilityValue('volume_mute', false);
             }
             break;
 
           case 'volume':
-            this.log(`Changing volume on devicecard ${device} -- command: ${eiscpcommand}`);
+            this.log(`Changing volume on devicecard ${device}`);
             deviceState.setCapabilityValue('volume_set', argument);
             break;
 
           case 'selector':
-            this.log(`Changing input on devicecard ${device} -- command: ${eiscpcommand}`);
-            deviceState.setCapabilityValue('inputset', argument);
+            this.log(`Changing input on devicecard ${device}`);
+            if (typeof argument !== 'undefined') {
+              deviceState.setCapabilityValue('inputset', argument[0]);
+            }
             break;
 
-          default: this.log(`Not defined change command -- commmand: ${eiscpcommand}`);
+          default: this.log('Not defined change command');
         }
       } else {
         this.log('Not defined change command or not supported by receiver');
