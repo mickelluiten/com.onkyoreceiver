@@ -12,7 +12,7 @@ class onkyoDevice extends Homey.Device {
   async onInit() {
     this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
 
-    // Register a listener for multiple capability change event
+    // Register a listener for multiple capability change events
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up', 'inputset'], valueObj => {
       this.setDeviceStateToReceiver(valueObj, this.getDeviceId());
       return Promise.resolve();
@@ -36,7 +36,6 @@ class onkyoDevice extends Homey.Device {
         return Promise.resolve(true);
       });
 
-
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
 
     // Main zone needs always there.
@@ -59,9 +58,11 @@ class onkyoDevice extends Homey.Device {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
         const onkyoCmdInputs = Object.values(msg);
         this.getDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
+
+        // flowcardtrigger
         const tokens = { OnkyoCommand: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
         const state = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
-        this.log(`FlowTigger:  ${JSON.stringify(state)}`);
+        this.log(`FlowTrigger:  ${JSON.stringify(state)}`);
         receivecustomcommand.trigger(tokens, state)
           .catch(this.error);
       });
@@ -100,7 +101,7 @@ class onkyoDevice extends Homey.Device {
     await this.setAvailable();
   }
 
-  // CapabilityListener to send command to receiver.
+  // CapabilityListener to send commands to receiver.
   async setDeviceStateToReceiver(valueObj, deviceId) {
     const valueName = Object.keys(valueObj);
     this.log(`Received state change for deviceID: ${deviceId} -- capabilty: ${valueName[0]} -- value: ${valueObj[valueName]}`);
@@ -206,6 +207,7 @@ class onkyoDevice extends Homey.Device {
     }
   }
 
+  // on reciverpowerOn get current status from receiver
   async getReceiverstate() {
     eiscp.command('main.selector=query');
     eiscp.command('main.volume=query');
