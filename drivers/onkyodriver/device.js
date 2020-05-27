@@ -12,11 +12,30 @@ class onkyoDevice extends Homey.Device {
   async onInit() {
     this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
 
-    // rRegister a listener for multiple capability change event
+    // Register a listener for multiple capability change event
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up', 'inputset'], valueObj => {
       this.setDeviceStateToReceiver(valueObj, this.getDeviceId());
       return Promise.resolve();
     }, 500);
+
+    // register listeners for flowcardtriggers
+    const receivecustomcommand = new Homey.FlowCardTrigger('receivecustomcommand');
+    receivecustomcommand
+      .registerRunListener((args, state) => {
+        return Promise.resolve(args.command === state.command);
+      })
+      .register();
+
+
+    // register listeners for flowcardactions
+    new Homey.FlowCardAction('sendcustomcommand')
+      .register()
+      .registerRunListener(args => {
+        this.log(`Sending custom command: ${args.command}`);
+        eiscp.command(args.command);
+        return Promise.resolve(true);
+      });
+
 
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
 
@@ -40,6 +59,11 @@ class onkyoDevice extends Homey.Device {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
         const onkyoCmdInputs = Object.values(msg);
         this.getDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
+        const tokens = { OnkyoCommand: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
+        const state = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
+        this.log(`FlowTigger:  ${JSON.stringify(state)}`);
+        receivecustomcommand.trigger(tokens, state)
+          .catch(this.error);
       });
       eiscp.on('close', msg => {
         this.log('Closing connection to receiver');
@@ -135,15 +159,6 @@ class onkyoDevice extends Homey.Device {
     }
   }
 
-  async getReceiverstate() {
-    eiscp.command('main.selector=query');
-    eiscp.command('main.volume=query');
-    eiscp.command('zone2.selector=query');
-    eiscp.command('zone2.volume=query');
-    eiscp.command('zone3.selector=query');
-    eiscp.command('zone3.volume=query');
-  }
-
   // Receive from receiver for setting the capabiltysvalues.
   async getDeviceStateFromReceiver(device, command, argument, eiscpcommand) {
     const driver = ManagerDrivers.getDriver('onkyodriver');
@@ -190,6 +205,16 @@ class onkyoDevice extends Homey.Device {
       }
     }
   }
+
+  async getReceiverstate() {
+    eiscp.command('main.selector=query');
+    eiscp.command('main.volume=query');
+    eiscp.command('zone2.selector=query');
+    eiscp.command('zone2.volume=query');
+    eiscp.command('zone3.selector=query');
+    eiscp.command('zone3.volume=query');
+  }
+
 
 }
 
