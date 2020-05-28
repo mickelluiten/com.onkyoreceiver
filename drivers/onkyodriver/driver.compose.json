@@ -14,8 +14,8 @@
     "inputset"
   ],
     "images": {
-    "large": "/drivers/onkyodriver/assets/images/large.png",
-    "small": "/drivers/onkyodriver/assets/images/small.png"
+    "large": "/drivers/onkyodriver/assets/images/large.jpg",
+    "small": "/drivers/onkyodriver/assets/images/small.jpg"
   },
   "pair": [
 {
