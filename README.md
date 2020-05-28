@@ -5,7 +5,7 @@ Control your Onkyo network-enabled receiver using the Homey by Athom B.V.
 Needs Homey firmware 3.1.0 or higher.
 Completely new coding.
 
-<bWARNING :   Because of the new coding the old app completely breaks down all devices and flows.
+WARNING :   Because of the new coding the old app completely breaks down all devices and flows.
             Advice is to remove all devices and deinstall the app.        
            
 Features
