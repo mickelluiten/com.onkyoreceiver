@@ -36,6 +36,14 @@ class onkyoDevice extends Homey.Device {
         return Promise.resolve(true);
       });
 
+    new Homey.FlowCardAction('sendrawcommand')
+      .register()
+      .registerRunListener(args => {
+        this.log(`Sending RAW  command: ${args.command}`);
+        eiscp.raw(args.command);
+        return Promise.resolve(true);
+      });
+
     this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
 
     // Main zone needs always there.

@@ -4,6 +4,8 @@
   "compatibility": ">=3.1.0",
   "sdk": 2,
   "brandColor": "#8142f5",
+  "homeyCommunityTopicId": 1234,
+  "support": "mailto:mickelluiten@gmail.com",
   "source": "https://github.com/mickelluiten/com.onkyoreceiver",
   "name": {
     "en": "Onkyo Receiver"
@@ -63,6 +65,33 @@
         },
         "hint": {
           "en": "Send a custom command as zoneID.command=argument. For Example main.volume=22"
+        },
+        "tokens": [
+          {
+            "name": "OnkyoCommand",
+            "type": "string",
+            "title": {
+              "en": "OnkyoCommand"
+            }
+          }
+        ],
+        "args": [
+          {
+            "name": "command",
+            "type": "text",
+            "placeholder": {
+              "en": "Command"
+            }
+          }
+        ]
+      },
+      {
+        "id": "sendrawcommand",
+        "title": {
+          "en": "Send a RAW EISCP command"
+        },
+        "hint": {
+          "en": "Send a RAW EISCP command as PWR00 for poweroff"
         },
         "tokens": [
           {
