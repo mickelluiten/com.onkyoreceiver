@@ -41,15 +41,18 @@ class onkyoDriver extends Homey.Driver {
       onkyoSocketConnected = true;
     });
 
+    /*
     onkyoSocket.on('data', (data, callback) => {
-      let payLoad = this.eiscpPacket(data);
-      payLoad = data.toString().split('!1');
-      payLoad = JSON.stringify(payLoad[1]);
-      payLoad = payLoad.split('\\u');
-      payLoad = payLoad[0].substring(1);
-      this.log(`Received data from receiver: ${payLoad}`);
-    });
+    let payLoad = this.eiscpPacket(data);
+    payLoad = data.toString().split('!1');
+    payLoad = JSON.stringify(payLoad[1]);
+    payLoad = payLoad.split('\\u');
+    payLoad = payLoad[0].substring(1);
+    this.log(`Received data from receiver: ${payLoad}`);
+        });
+    */
   }
+
 
   eiscpPacket(cmd) {
     const cmdLength = cmd.length + 1;

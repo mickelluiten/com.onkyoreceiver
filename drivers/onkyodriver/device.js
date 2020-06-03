@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 
 'use strict';
@@ -7,11 +8,29 @@ const { ManagerSettings } = require('homey');
 const { ManagerDrivers } = require('homey');
 const eiscp = require('eiscp');
 
+let onkyoSocketConnectionExisted = false;
+let deviceMainIsDeleted = false;
+let DeviceMainIsInUse = false;
+let DeviceZone2IsInUse = false;
+let DeviceZone3IsInUse = false;
+
 class onkyoDevice extends Homey.Device {
 
   async onInit() {
+    deviceMainIsDeleted = false;
+    switch (this.getDeviceId()) {
+      case 'main':
+        DeviceMainIsInUse = true;
+        break;
+      case 'zone2':
+        DeviceZone2IsInUse = true;
+        break;
+      case 'zone3':
+        DeviceZone3IsInUse = true;
+        break;
+      default: this.log('no devices in init');
+    }
     this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
-
     // Register a listener for multiple capability change events
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up', 'inputset'], valueObj => {
       this.setDeviceStateToReceiver(valueObj, this.getDeviceId());
@@ -48,20 +67,42 @@ class onkyoDevice extends Homey.Device {
 
     // Main zone needs always there.
     if (this.getDeviceId() === 'main') {
+      if (ManagerSettings.get('ipAddressSet') !== '0.0.0.0') {
+        this.socketConnector();
+      } // start the socket
       // register a listener for changes in de manager settingss.
       ManagerSettings.on('set', data => {
+        eiscp.close();
         this.log('Manager setting is changed');
         this.log(`IP Adress:   ${ManagerSettings.get('ipAddressSet')}`);
         this.log(`Max Volume:  ${ManagerSettings.get('maxVolumeSet')}`);
         this.log(`Volume Step: ${ManagerSettings.get('volumeStepSet')}`);
         this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
-        if (ManagerSettings.get('ipAddressSet') !== '0.0.0.0') {
-          eiscp.connect({ host: ManagerSettings.get('ipAddressSet') });
-        }
       });
-      if (ManagerSettings.get('ipAddressSet') !== '0.0.0.0') {
-        eiscp.connect({ host: ManagerSettings.get('ipAddressSet') });
-      }
+
+      // When socket getting no data
+      eiscp.on('timeout', msg => {
+        this.log(`Timeout on connection: ${msg}`);
+        onkyoSocketConnectionExisted = false;
+      });
+
+      // When socket is closed
+      eiscp.on('close', msg => {
+        this.log(`Closing connection to receiver: ${msg}`);
+      });
+
+      // When socket trows a error
+      eiscp.on('error', msg => {
+        this.log(`ERROR: ${msg}`);
+        onkyoSocketConnectionExisted = false;
+      });
+
+      // WHen socket is connected
+      eiscp.on('connect', msg => {
+        this.log(`Connected to receiver: ${msg}`);
+      });
+
+      // On socket data
       eiscp.on('data', msg => {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
         const onkyoCmdInputs = Object.values(msg);
@@ -74,23 +115,43 @@ class onkyoDevice extends Homey.Device {
         receivecustomcommand.trigger(tokens, state)
           .catch(this.error);
       });
-      eiscp.on('close', msg => {
-        this.log('Closing connection to receiver');
-      });
     }
+  }
+
+  // socketconnection to receiver
+  async socketConnector() {
+    const socketTimer = setInterval(() => {
+      if (!onkyoSocketConnectionExisted && !deviceMainIsDeleted) {
+        eiscp.connect({ host: ManagerSettings.get('ipAddressSet') });
+        onkyoSocketConnectionExisted = true;
+        this.log(`Trying to connect to receiver: ${ManagerSettings.get('ipAddressSet')}`);
+      }
+    }, 15000);
   }
 
   // when device is addded
   onAdded() {
-    this.log(`Device "${this.getName()}" is added`);
+    this.log(`device added: name = ${this.getName()}, id = ${this.getDeviceId()}`);
   }
 
   // when device is deleted
   onDeleted() {
-    this.log(`Device "${this.getName()}" is deleted`);
-    // when deviceard main is deleted stop socket
-    if (this.getDeviceId() === 'main') {
-      eiscp.close();
+    this.log(`device deleted: name = ${this.getName()}, id = ${this.getDeviceId()}`);
+    // when deviceard main is deleted stop socketconnection
+    switch (this.getDeviceId()) {
+      case 'main':
+        onkyoSocketConnectionExisted = false;
+        deviceMainIsDeleted = true;
+        eiscp.close();
+        DeviceMainIsInUse = false;
+        break;
+      case 'zone2':
+        DeviceZone2IsInUse = false;
+        break;
+      case 'zone3':
+        DeviceZone3IsInUse = false;
+        break;
+      default: this.log('no devices in init');
     }
   }
 
@@ -171,40 +232,47 @@ class onkyoDevice extends Homey.Device {
   // Receive from receiver for setting the capabiltysvalues.
   async getDeviceStateFromReceiver(device, command, argument, eiscpcommand) {
     const driver = ManagerDrivers.getDriver('onkyodriver');
-    const deviceState = driver.getDevice({ id: device });
+    const deviceNameId = driver.getDevice({ id: device });
     if (typeof eiscpcommand !== 'undefined') {
       if (!eiscpcommand.includes('N/A')) {
         switch (command) {
           case 'power':
             if (argument === 'on') {
               this.log(`Set powerON on devicecard: ${device}`);
-              deviceState.setCapabilityValue('onoff', true);
+              deviceNameId.setCapabilityValue('onoff', true);
             } else {
               this.log(`Set powerOFF on devicecard: ${device}`);
-              deviceState.setCapabilityValue('onoff', false);
+              deviceNameId.setCapabilityValue('onoff', false);
             }
             break;
 
           case 'muting':
             if (argument === 'on') {
               this.log(`Set MuteON on devicecard: ${device}`);
-              deviceState.setCapabilityValue('volume_mute', true);
+              deviceNameId.setCapabilityValue('volume_mute', true);
             } else {
               this.log(`Set MuteOFF on devicecard: ${device}`);
-              deviceState.setCapabilityValue('volume_mute', false);
+              deviceNameId.setCapabilityValue('volume_mute', false);
             }
             break;
 
           case 'volume':
             this.log(`Changing volume on devicecard ${device}`);
-            deviceState.setCapabilityValue('volume_set', argument);
+            deviceNameId.setCapabilityValue('volume_set', argument);
             break;
 
           case 'selector':
             this.log(`Changing input on devicecard ${device}`);
             if (typeof argument !== 'undefined') {
-              deviceState.setCapabilityValue('inputset', argument[0]);
+              deviceNameId.setCapabilityValue('inputset', argument[0]);
             }
+            break;
+
+          // bugfix when e.g. spotifyconnect NO pwrON is send by receiver and no selector
+          case 'net-usb-play-status':
+            this.log(`Sending powerOn ${device}`);
+            eiscp.command(`${device}.power=on`);
+            eiscp.command(`${device}.selector=network`);
             break;
 
           default: this.log('Not defined change command');
@@ -217,16 +285,22 @@ class onkyoDevice extends Homey.Device {
 
   // on reciverpowerOn get current status from receiver
   async getReceiverstate() {
-    eiscp.command('main.selector=query');
-    eiscp.command('main.volume=query');
-    eiscp.command('zone2.selector=query');
-    eiscp.command('zone2.volume=query');
-    eiscp.command('zone3.selector=query');
-    eiscp.command('zone3.volume=query');
+    if (DeviceMainIsInUse) {
+      eiscp.command('main.selector=query');
+      eiscp.command('main.volume=query');
+    }
+    // only needed is devicecard zone2 or 3 are there
+    if (DeviceZone2IsInUse) {
+      eiscp.command('zone2.selector=query');
+      eiscp.command('zone2.volume=query');
+    }
+    if (DeviceZone3IsInUse) {
+      eiscp.command('zone3.selector=query');
+      eiscp.command('zone3.volume=query');
+    }
   }
 
 
 }
-
 
 module.exports = onkyoDevice;
