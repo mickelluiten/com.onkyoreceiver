@@ -31,6 +31,7 @@ class onkyoDevice extends Homey.Device {
       default: this.log('no devices in init');
     }
     this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
+
     // Register a listener for multiple capability change events
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up', 'inputset'], valueObj => {
       this.setDeviceStateToReceiver(valueObj, this.getDeviceId());
@@ -44,7 +45,6 @@ class onkyoDevice extends Homey.Device {
         return Promise.resolve(args.command === state.command);
       })
       .register();
-
 
     // register listeners for flowcardactions
     new Homey.FlowCardAction('sendcustomcommand')
@@ -72,6 +72,7 @@ class onkyoDevice extends Homey.Device {
       } // start the socket
       // register a listener for changes in de manager settingss.
       ManagerSettings.on('set', data => {
+        this.setUnavailable();
         eiscp.close();
         this.log('Manager setting is changed');
         this.log(`IP Adress:   ${ManagerSettings.get('ipAddressSet')}`);
@@ -84,22 +85,27 @@ class onkyoDevice extends Homey.Device {
       eiscp.on('timeout', msg => {
         this.log(`Timeout on connection: ${msg}`);
         onkyoSocketConnectionExisted = false;
+        this.setUnavailable();
       });
 
       // When socket is closed
       eiscp.on('close', msg => {
         this.log(`Closing connection to receiver: ${msg}`);
+        onkyoSocketConnectionExisted = false;
+        this.setUnavailable();
       });
 
       // When socket trows a error
       eiscp.on('error', msg => {
         this.log(`ERROR: ${msg}`);
         onkyoSocketConnectionExisted = false;
+        this.setUnavailable();
       });
 
       // WHen socket is connected
       eiscp.on('connect', msg => {
         this.log(`Connected to receiver: ${msg}`);
+        this.setAvailable();
       });
 
       // On socket data
@@ -126,7 +132,7 @@ class onkyoDevice extends Homey.Device {
         onkyoSocketConnectionExisted = true;
         this.log(`Trying to connect to receiver: ${ManagerSettings.get('ipAddressSet')}`);
       }
-    }, 15000);
+    }, 5000);
   }
 
   // when device is addded
@@ -167,7 +173,6 @@ class onkyoDevice extends Homey.Device {
     this.setCapabilityOptions('volume_set', {
       min: 0, max: Number(maxVolumeValue), step: 1, decimals: 0,
     });
-    await this.setAvailable();
   }
 
   // CapabilityListener to send commands to receiver.
