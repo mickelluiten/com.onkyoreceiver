@@ -4,5 +4,8 @@
   },
   "3.1.0": {
     "en": "Settings bugfix, pairing bugfix, socketconnection inprovement, spotifyconnect workarround"
+  },
+  "3.1.1": {
+    "en": "Bugfix: When changing a setting , connection to receiver did not buildup"
   }
 }
