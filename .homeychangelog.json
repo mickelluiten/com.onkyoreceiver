@@ -1,5 +1,8 @@
 {
   "3.0.0": {
     "en": "Complete recoding"
+  },
+  "3.1.0": {
+    "en": "Settings bugfix, pairing bugfix, socketconnection inprovement, spotifyconnect workarround"
   }
 }
