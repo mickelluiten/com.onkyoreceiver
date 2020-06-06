@@ -12,7 +12,8 @@ Features
 * Gerenal settings for:
     * IPaddress
     * Maximum volume settings
-    * Volumestep
+    * Volumestep (for the + and - on the devicecard)
+    * Receiver volumestep (some receivers do 0,5 volume steps instead of normal 1 steps)
 * Sererate devicecards for main zone, zone2 and zone3 (main zone is mandatory)
 
 Capabiltys on devicecards:
@@ -44,8 +45,8 @@ Flowactions
 * Send custom command (general flow)
 * Send RAW EISCP command (general flow)
 
-After install go to the general settings and set the ipPaddress,  maxvolume and volumestep.
-Add the device(s),  main zone is mandatory.
+After install go to the general settings and set the ipPaddress, maxvolume, volumestep and receiver volumestep.
+Add the device(s), main zone is mandatory.
 
 App using the node-eiscp from https://github.com/tillbaks/node-eiscp.
 For the sending and receiving custom command flows, see the complete command list on https://github.com/mickelluiten/com.onkyoreceiver/blob/master/eiscp-commands-info.txt
