@@ -13,7 +13,16 @@ class onkyoDriver extends Homey.Driver {
 
   onInit() {
     this.log('onkyoDriver has been inited');
+    // register a listener for changes in de manager settingss.
+    ManagerSettings.on('set', data => {
+      this.log('Manager setting are changed');
+      this.log(`IP Adress:   ${ManagerSettings.get('ipAddressSet')}`);
+      this.log(`Max Volume:  ${ManagerSettings.get('maxVolumeSet')}`);
+      this.log(`Receiver Volume Step:  ${ManagerSettings.get('ReceiverVolumeStep')}`);
+      this.log(`Volume Step: ${ManagerSettings.get('volumeStepSet')}`);
+    });
   }
+
 
   // create and open the socket
   socketConnection(settings) {

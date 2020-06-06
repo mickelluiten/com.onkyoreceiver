@@ -8,7 +8,7 @@ class onkyoApp extends Homey.App {
 
   onInit() {
     this.log('onkyoApp is running...');
-    this.log(`ManagerSettings: -- ipAddress: ${ManagerSettings.get('ipAddressSet')} -- maxVolume:${ManagerSettings.get('maxVolumeSet')} -- volumeStep:${ManagerSettings.get('volumeStepSet')}`);
+    this.log(`ManagerSettings: -- ipAddress: ${ManagerSettings.get('ipAddressSet')} -- maxVolume:${ManagerSettings.get('maxVolumeSet')} -- ReceiverVolumestep :${ManagerSettings.get('ReceiverVolumeStep')} -- volumeStep:${ManagerSettings.get('volumeStepSet')}`);
   }
 
 }

@@ -7,5 +7,8 @@
   },
   "3.1.1": {
     "en": "Bugfix: When changing a setting , connection to receiver did not buildup"
+  },
+  "3.2.0": {
+    "en": "Settings validator, Setting for slider when receiver does 0.5 steps "
   }
 }

@@ -63,22 +63,18 @@ class onkyoDevice extends Homey.Device {
         return Promise.resolve(true);
       });
 
-    this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
+    this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'), ManagerSettings.get('ReceiverVolumeStep'));
 
     // Main zone needs always there.
     if (this.getDeviceId() === 'main') {
       if (ManagerSettings.get('ipAddressSet') !== '0.0.0.0') {
-        this.socketConnector();
-      } // start the socket
+        this.socketConnector(); // start the socket
+      }
       // register a listener for changes in de manager settingss.
       ManagerSettings.on('set', data => {
         this.setUnavailable();
         eiscp.close();
-        this.log('Manager setting is changed');
-        this.log(`IP Adress:   ${ManagerSettings.get('ipAddressSet')}`);
-        this.log(`Max Volume:  ${ManagerSettings.get('maxVolumeSet')}`);
-        this.log(`Volume Step: ${ManagerSettings.get('volumeStepSet')}`);
-        this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'));
+        this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'), ManagerSettings.get('ReceiverVolumeStep'));
       });
 
       // When socket getting no data
@@ -168,11 +164,19 @@ class onkyoDevice extends Homey.Device {
   }
 
   // Setting the maxvolume setting on volume_set capability to scale and refresh device
-  async setSettingsVolumeSliderMax(maxVolumeValue) {
+  async setSettingsVolumeSliderMax(maxVolumeValue, receiverVolmeStepValue) {
     await this.setUnavailable();
-    this.setCapabilityOptions('volume_set', {
-      min: 0, max: Number(maxVolumeValue), step: 1, decimals: 0,
-    });
+    if (Number(receiverVolmeStepValue) === 1) {
+      this.log(`Change volumesettingslider to step: ${receiverVolmeStepValue} --MaxVolume: ${maxVolumeValue}`);
+      this.setCapabilityOptions('volume_set', {
+        min: 0, max: Number(maxVolumeValue), step: 1, decimals: 0,
+      });
+    } else if (Number(receiverVolmeStepValue) === 0.5) {
+      this.log(`Change volumesettingslider to step: ${receiverVolmeStepValue} --MaxVolume: ${maxVolumeValue}`);
+      this.setCapabilityOptions('volume_set', {
+        min: 0, max: Number(maxVolumeValue) * 2, step: 1, decimals: 0,
+      });
+    }
   }
 
   // CapabilityListener to send commands to receiver.
@@ -206,7 +210,7 @@ class onkyoDevice extends Homey.Device {
 
       case 'volume_up':
         this.log(`Sending VolumeUP command to receiver for ${deviceId}`);
-        if (volumeUp < ManagerSettings.get('maxVolumeSet')) {
+        if (volumeUp <= ManagerSettings.get('maxVolumeSet')) {
           eiscp.command(`${deviceId}.volume=${volumeUp}`);
         } else {
           this.log('Maximum volume reached');

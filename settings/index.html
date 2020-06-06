@@ -21,20 +21,47 @@
         </p>
 
         <fieldset>
-            
-            <div class="field row">
-                <label for="ipAddressSet">IP Address</label>
-                <input id="ipAddressSet" pattern="^(([01]?\\d\\d?|2[0-4]\\d|25[0-5]).){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" type="text" placeholder="192.168.1.x"value="" />
-            </div>
-            <div class="field row">
-                <label for="maxVolumeSet">Maximum Volume</label>
-                <input id="maxVolumeSet" type="text" placeholder="50" value="" />
-            </div>
-            <div class="field row">
-                <label for="volumeStepSet">VolumeStep</label>
-                <input id="volumeStepSet" type="text" placeholder="2" value="" />
-            </div>
+        <table>
+                <div class="field row">
+                    <tr>
+                        <th style="width:170px;"><label for="ipAddressSet">IP Address</label></th>
+                        <td rowspan="2"><input id="ipAddressSet" type="text" placeholder="192.168.1.10" required  /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </div>
 
+                <div class="field row">
+                    <tr>
+                        <th style="width:170px;"><label for="ReceiverVolumeStep">Receiver VolumeStep</label></th>
+                        <td rowspan="2"><input id="ReceiverVolumeStep" type="text" value="false" placeholder="1" required /></td>
+                    </tr>
+                    <tr>
+                        <th style="width:170px;"><label for="ReceiverVolumeStep">0.5 or 1</label></th>
+                    </tr>
+                </div>
+
+                <div class="field row">
+                    <tr>
+                        <th style="width:170px;"><label for="maxVolumeSet">Maximum Volume</label></th>
+                        <td rowspan="2"><input id="maxVolumeSet" type="text" placeholder="50" required/></td>
+                    </tr>
+                    <tr>
+                        <th style="width:170px;"><label for="maxVolumeSet">Btween 1-100</label></th>
+                    </tr>
+                </div>            
+
+                <div class="field row">
+                    <tr>
+                        <th style="width:170px;"><label for="volumeStepSet">VolumeStep</label></th>
+                        <td rowspan="2"><input id="volumeStepSet" type="text" placeholder="2" required/></td>
+                    </tr>
+                    <tr>
+                        <th style="width:170px;" ><label for="volumeStepSet">Between 1-10</label></th>
+                    </tr>
+                </div>
+        </table>
         </fieldset>
 
         <button id="save" class="right">Save changes</button>
@@ -46,19 +73,21 @@
 
           Homey.get('ipAddressSet', function( err, ipAddressSet ) {
                if( err ) return Homey.alert( err );
-               // Homey.set('ipAddressSet', '0.0.0.0');
                ipAddressSetElement.value = ipAddressSet;
               });
 
             Homey.get('maxVolumeSet', function( err, maxVolumeSet ) {
                if( err ) return Homey.alert( err );
-               // Homey.set('maxVolumeSet', '50');
                maxVolumeSetElement.value = maxVolumeSet;
+            });
+
+            Homey.get('ReceiverVolumeStep', function( err, ReceiverVolumeStep ) {
+               if( err ) return Homey.alert( err );
+               ReceiverVolumeStepElement.value = ReceiverVolumeStep;
             });
 
             Homey.get('volumeStepSet', function( err, volumeStepSet ) {
                if( err ) return Homey.alert( err );
-               // Homey.set('volumeStepSet', '2');
                volumeStepSetElement.value = volumeStepSet;
             });
 
@@ -68,20 +97,40 @@
 
             var ipAddressSetElement = document.getElementById('ipAddressSet');
             var maxVolumeSetElement = document.getElementById('maxVolumeSet');
+            var ReceiverVolumeStepElement = document.getElementById('ReceiverVolumeStep');
             var volumeStepSetElement = document.getElementById('volumeStepSet');
             var saveElement = document.getElementById('save');
 
             saveElement.addEventListener('click', function(e) {
 
-                Homey.set('ipAddressSet', ipAddressSetElement.value, function( err ){
-                    if( err ) return Homey.alert( err );
-                });
-                Homey.set('maxVolumeSet', maxVolumeSetElement.value, function( err ){
-                    if( err ) return Homey.alert( err );
-                });
-                Homey.set('volumeStepSet', volumeStepSetElement.value, function( err ){
-                    if( err ) return Homey.alert( err );
-                });
+
+             // create Regular Expression that validates for IPv4 addresses, then do the actual test on the input.
+           var Ipv4RegEx = new RegExp('^(([01]?\\d\\d?|2[0-4]\\d|25[0-5]).){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$');
+           var IPInputOK = Ipv4RegEx.test(ipAddressSetElement.value);
+                if (IPInputOK) {
+                    Homey.set('ipAddressSet', ipAddressSetElement.value);
+                 } else {
+                    Homey.alert('No (valid) IP address');
+                 }
+           
+                if (Number(maxVolumeSetElement.value) >=1 && Number(maxVolumeSetElement.value) <= 100) {
+                    Homey.set('maxVolumeSet', maxVolumeSetElement.value);
+                 } else {
+                    Homey.alert('Maximum volume value must be between 1-100');
+              }
+                if (Number(ReceiverVolumeStepElement.value) === 1){
+                    Homey.set('ReceiverVolumeStep', ReceiverVolumeStepElement.value);
+                } else if (Number(ReceiverVolumeStepElement.value) === 0.5) {
+                    Homey.set('ReceiverVolumeStep', ReceiverVolumeStepElement.value);
+                } else {
+                    Homey.alert('Receiver volumestep must be 0.5 or 1');
+                }
+
+                if (Number(volumeStepSetElement.value) >=1 && Number(volumeStepSetElement.value) <=10 ) {
+                    Homey.set('volumeStepSet', volumeStepSetElement.value);
+                 } else {
+                    Homey.alert('Volume step value must be between 1-10');  
+                }
 
                 document.getElementById('save').innerHTML = "Settings saved";
 
