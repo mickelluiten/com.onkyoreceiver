@@ -13,6 +13,7 @@ let deviceMainIsDeleted = false;
 let DeviceMainIsInUse = false;
 let DeviceZone2IsInUse = false;
 let DeviceZone3IsInUse = false;
+let receiverVolumeStepVar = 1;
 
 class onkyoDevice extends Homey.Device {
 
@@ -168,11 +169,13 @@ class onkyoDevice extends Homey.Device {
     await this.setUnavailable();
     if (Number(receiverVolmeStepValue) === 1) {
       this.log(`Change volumesettingslider to step: ${receiverVolmeStepValue} --MaxVolume: ${maxVolumeValue}`);
+      receiverVolumeStepVar = 1;
       this.setCapabilityOptions('volume_set', {
         min: 0, max: Number(maxVolumeValue), step: 1, decimals: 0,
       });
     } else if (Number(receiverVolmeStepValue) === 0.5) {
       this.log(`Change volumesettingslider to step: ${receiverVolmeStepValue} --MaxVolume: ${maxVolumeValue}`);
+      receiverVolumeStepVar = 0.5;
       this.setCapabilityOptions('volume_set', {
         min: 0, max: Number(maxVolumeValue) * 2, step: 1, decimals: 0,
       });
@@ -181,11 +184,18 @@ class onkyoDevice extends Homey.Device {
 
   // CapabilityListener to send commands to receiver.
   async setDeviceStateToReceiver(valueObj, deviceId) {
+    let volumeDown;
+    let volumeUp;
     const valueName = Object.keys(valueObj);
     this.log(`Received state change for deviceID: ${deviceId} -- capabilty: ${valueName[0]} -- value: ${valueObj[valueName]}`);
     const currentVolume = this.getCapabilityValue('volume_set');
-    const volumeDown = Number(currentVolume) - Number(ManagerSettings.get('volumeStepSet'));
-    const volumeUp = Number(currentVolume) + Number(ManagerSettings.get('volumeStepSet'));
+    if (receiverVolumeStepVar === 1) {
+      volumeDown = Number(currentVolume) - Number(ManagerSettings.get('volumeStepSet'));
+      volumeUp = Number(currentVolume) + Number(ManagerSettings.get('volumeStepSet'));
+    } else if (receiverVolumeStepVar === 0.5) {
+      volumeDown = Number(currentVolume) - Number(ManagerSettings.get('volumeStepSet') * 2);
+      volumeUp = Number(currentVolume) + Number(ManagerSettings.get('volumeStepSet') * 2);
+    }
     switch (valueName[0]) {
       case 'onoff':
         if (valueObj[valueName]) {
@@ -210,16 +220,24 @@ class onkyoDevice extends Homey.Device {
 
       case 'volume_up':
         this.log(`Sending VolumeUP command to receiver for ${deviceId}`);
-        if (volumeUp <= ManagerSettings.get('maxVolumeSet')) {
-          eiscp.command(`${deviceId}.volume=${volumeUp}`);
-        } else {
-          this.log('Maximum volume reached');
+        if (receiverVolumeStepVar === 1) {
+          if (volumeUp <= ManagerSettings.get('maxVolumeSet')) {
+            eiscp.command(`${deviceId}.volume=${volumeUp}`);
+          } else {
+            this.log('Maximum volume reached');
+          }
+        } else if (receiverVolumeStepVar === 0.5) {
+          if (volumeUp <= ManagerSettings.get('maxVolumeSet') * 2) {
+            eiscp.command(`${deviceId}.volume=${volumeUp}`);
+          } else {
+            this.log('Maximum volume reached');
+          }
         }
         break;
 
       case 'volume_down':
         this.log(`Sending VolumeDOWN command to receiver for ${deviceId}`);
-        if (volumeDown > 0) {
+        if (volumeDown >= 0) {
           eiscp.command(`${deviceId}.volume=${volumeDown}`);
         }
         break;

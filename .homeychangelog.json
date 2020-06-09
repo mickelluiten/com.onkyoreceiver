@@ -10,5 +10,8 @@
   },
   "3.2.0": {
     "en": "Settings validator, Setting for slider when receiver does 0.5 steps "
+  },
+  "3.2.1": {
+    "en": "Bugfix on volume+ and volume- when receiver using 0.5 volume steps"
   }
 }
