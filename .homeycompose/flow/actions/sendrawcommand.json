@@ -6,15 +6,6 @@
   "hint": {
     "en": "Send a RAW EISCP command as PWR00 for poweroff"
   },
-  "tokens": [
-    {
-      "name": "OnkyoCommand",
-      "type": "string",
-      "title": {
-        "en": "OnkyoCommand"
-      }
-    }
-  ],
   "args": [
     {
        "name": "command",

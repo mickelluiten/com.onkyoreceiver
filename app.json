@@ -1,6 +1,6 @@
 {
   "id": "com.onkyo",
-  "version": "3.2.1",
+  "version": "3.2.3",
   "compatibility": ">=3.1.0",
   "sdk": 2,
   "brandColor": "#8142f5",
@@ -66,15 +66,6 @@
         "hint": {
           "en": "Send a custom command as zoneID.command=argument. For Example main.volume=22"
         },
-        "tokens": [
-          {
-            "name": "OnkyoCommand",
-            "type": "string",
-            "title": {
-              "en": "OnkyoCommand"
-            }
-          }
-        ],
         "args": [
           {
             "name": "command",
@@ -93,15 +84,6 @@
         "hint": {
           "en": "Send a RAW EISCP command as PWR00 for poweroff"
         },
-        "tokens": [
-          {
-            "name": "OnkyoCommand",
-            "type": "string",
-            "title": {
-              "en": "OnkyoCommand"
-            }
-          }
-        ],
         "args": [
           {
             "name": "command",

@@ -6,15 +6,6 @@
   "hint": {
     "en": "Send a custom command as zoneID.command=argument. For Example main.volume=22"
   },
-  "tokens": [
-    {
-      "name": "OnkyoCommand",
-      "type": "string",
-      "title": {
-        "en": "OnkyoCommand"
-      }
-    }
-  ],
   "args": [
     {
        "name": "command",
