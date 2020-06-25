@@ -662,7 +662,7 @@ Also possible to send RAW EISCP command like PWR00 for power OFF or PWR01 for po
                 name: video3
                 description: sets VIDEO3, GAME/TV, GAME, GAME1
               '03':
-                name: video4, aux1]
+                name: video4
                 description: sets VIDEO4, AUX1(AUX)
               '04':
                 name: video5
