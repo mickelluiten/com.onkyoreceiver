@@ -12,6 +12,7 @@ Features
 * Gerenal settings for:
     * IPaddress
     * Maximum volume settings
+    * Port default onkyo port is 60128, but some (pioneer) receivers using port 8102 or 23.
     * Volumestep (for the + and - on the devicecard)
     * Receiver volumestep (some receivers do 0,5 volume steps instead of normal 1 steps)
 * Sererate devicecards for main zone, zone2 and zone3 (main zone is mandatory)

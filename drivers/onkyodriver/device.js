@@ -168,7 +168,7 @@ class onkyoDevice extends Homey.Device {
   async socketConnector() {
     const socketTimer = setInterval(() => {
       if (!onkyoSocketConnectionExisted && !deviceMainIsDeleted) {
-        eiscp.connect({ host: ManagerSettings.get('ipAddressSet') });
+        eiscp.connect({ port: Number(ManagerSettings.get('portSettings')), host: ManagerSettings.get('ipAddressSet') });
         onkyoSocketConnectionExisted = true;
         this.log(`Trying to connect to receiver: ${ManagerSettings.get('ipAddressSet')}`);
       }

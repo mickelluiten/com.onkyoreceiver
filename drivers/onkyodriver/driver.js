@@ -17,6 +17,7 @@ class onkyoDriver extends Homey.Driver {
     ManagerSettings.on('set', data => {
       this.log('Manager setting are changed');
       this.log(`IP Adress:   ${ManagerSettings.get('ipAddressSet')}`);
+      this.log(`Port: ${ManagerSettings.get('portSettings')}`);
       this.log(`Max Volume:  ${ManagerSettings.get('maxVolumeSet')}`);
       this.log(`Receiver Volume Step:  ${ManagerSettings.get('ReceiverVolumeStep')}`);
       this.log(`Volume Step: ${ManagerSettings.get('volumeStepSet')}`);
@@ -27,7 +28,7 @@ class onkyoDriver extends Homey.Driver {
   // create and open the socket
   socketConnection(settings) {
     onkyoSocket = new net.Socket();
-    onkyoSocket.connect(60128, ManagerSettings.get('ipAddressSet'), () => {
+    onkyoSocket.connect(Number(ManagerSettings.get('portSettings')), ManagerSettings.get('ipAddressSet'), () => {
     });
 
     // socket timeout
@@ -96,7 +97,7 @@ class onkyoDriver extends Homey.Driver {
       },
     },
     ];
-    this.socketConnection(ManagerSettings.get('ipAddressSet')); // start socket for receiver check
+    this.socketConnection(Number(ManagerSettings.get('portSettings')), ManagerSettings.get('ipAddressSet')); // start socket for receiver check
     socket.on('showView', (viewId, callbackShow) => {
       callbackShow();
       if (viewId === 'start') {
@@ -112,7 +113,7 @@ class onkyoDriver extends Homey.Driver {
             callback(null, devices);
           });
         } else {
-          socket.emit('errors', 'No response from receiver, check IP', (err, data) => {
+          socket.emit('errors', 'No response from receiver, check IP or port', (err, data) => {
           });
         }
       }

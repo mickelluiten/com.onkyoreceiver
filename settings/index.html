@@ -14,51 +14,65 @@
             Read more about translations at Internationalization.
             -->
         </h1>
-        <p data-i18n="settings.intro">
-            <!--
-            This field will also be translated
-            -->
-        </p>
-
+        
         <fieldset>
-        <table>
+            <p>Ipaddress of the receiver (e.g. : 192.168.1.5)</p>
+            <table>
                 <div class="field row">
                     <tr>
-                        <th style="width:170px;"><label for="ipAddressSet">IP Address</label></th>
+                        <th style="width:170px"><label for="ipAddressSet">IP Address</label></th>
                         <td rowspan="2"><input id="ipAddressSet" type="text" placeholder="192.168.1.10" required  /></td>
                     </tr>
                     <tr>
                         <td></td>
                     </tr>
                 </div>
+        </table>    
+        </fieldset>
 
+        <fieldset>
+            <p>Port number 1-65535. For Onkyo use 60128 or for Pioneer use 8102 or 23</p>
+            <table>
+                <div class="field row">
+                    <tr>
+                        <th style="width:170px;"><label for="portSettings">Port</label></th>
+                        <td rowspan="2"><input id="portSettings" type="text" value="false" placeholder="60128" required /></td>
+                    </tr>
+                </div>
+         </table>
+        </fieldset>
+
+        <fieldset>
+            <p>Receiver Volumestep 1 or 0.5 depending on receivertype. Some receivers doing steps of 0.5.</p>
+            <table>
                 <div class="field row">
                     <tr>
                         <th style="width:170px;"><label for="ReceiverVolumeStep">Receiver VolumeStep</label></th>
                         <td rowspan="2"><input id="ReceiverVolumeStep" type="text" value="false" placeholder="1" required /></td>
                     </tr>
-                    <tr>
-                        <th style="width:170px;"><label for="ReceiverVolumeStep">0.5 or 1</label></th>
-                    </tr>
                 </div>
+            </table>
+        </fieldset>
 
+        <fieldset>
+            <p>Maximum volume that will be send to receiver. Also to scale the volumeslider</p>
+            <table>
                 <div class="field row">
                     <tr>
                         <th style="width:170px;"><label for="maxVolumeSet">Maximum Volume</label></th>
                         <td rowspan="2"><input id="maxVolumeSet" type="text" placeholder="50" required/></td>
                     </tr>
-                    <tr>
-                        <th style="width:170px;"><label for="maxVolumeSet">Btween 1-100</label></th>
-                    </tr>
-                </div>            
-
+                </div>
+            </table>
+        </fieldset>
+        
+        <fieldset>
+            <p>Volumestep to make bigger steps on the + and - volume buttons</p>
+            <table>   
                 <div class="field row">
                     <tr>
                         <th style="width:170px;"><label for="volumeStepSet">VolumeStep</label></th>
                         <td rowspan="2"><input id="volumeStepSet" type="text" placeholder="2" required/></td>
-                    </tr>
-                    <tr>
-                        <th style="width:170px;" ><label for="volumeStepSet">Between 1-10</label></th>
                     </tr>
                 </div>
         </table>
@@ -71,9 +85,14 @@
         // a method named 'onHomeyReady' must be present in your code
         function onHomeyReady( Homey ){
 
-          Homey.get('ipAddressSet', function( err, ipAddressSet ) {
+             Homey.get('ipAddressSet', function( err, ipAddressSet ) {
                if( err ) return Homey.alert( err );
                ipAddressSetElement.value = ipAddressSet;
+              });
+
+            Homey.get('portSettings', function( err, portSettings ) {
+               if( err ) return Homey.alert( err );
+               portSettingsSetElement.value = portSettings;
               });
 
             Homey.get('maxVolumeSet', function( err, maxVolumeSet ) {
@@ -96,6 +115,7 @@
             Homey.ready();
 
             var ipAddressSetElement = document.getElementById('ipAddressSet');
+            var portSettingsSetElement = document.getElementById('portSettings');
             var maxVolumeSetElement = document.getElementById('maxVolumeSet');
             var ReceiverVolumeStepElement = document.getElementById('ReceiverVolumeStep');
             var volumeStepSetElement = document.getElementById('volumeStepSet');
@@ -112,6 +132,12 @@
                  } else {
                     Homey.alert('No (valid) IP address');
                  }
+
+                if (Number(portSettingsSetElement.value) >= 1 && Number(portSettingsSetElement.value) <= 65535 ){
+                    Homey.set('portSettings', portSettingsSetElement.value);
+                } else {
+                    Homey.alert('Not a correct port');
+                }
            
                 if (Number(maxVolumeSetElement.value) >=1 && Number(maxVolumeSetElement.value) <= 100) {
                     Homey.set('maxVolumeSet', maxVolumeSetElement.value);

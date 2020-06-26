@@ -16,5 +16,8 @@
   },
   "3.2.3": {
     "en": "remove tokens from action cards"
+  },
+  "3.2.5": {
+    "en": "Zone2 & zone3 correct init, extra setting for port because other brand receivers"
   }
 }
