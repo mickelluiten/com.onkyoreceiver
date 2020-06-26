@@ -22,12 +22,15 @@ class onkyoDevice extends Homey.Device {
     switch (this.getDeviceId()) {
       case 'main':
         DeviceMainIsInUse = true;
+        this.setDeviceAvaible('main');
         break;
       case 'zone2':
         DeviceZone2IsInUse = true;
+        this.setDeviceAvaible('zone2');
         break;
       case 'zone3':
         DeviceZone3IsInUse = true;
+        this.setDeviceAvaible('zone3');
         break;
       default: this.log('no devices in init');
     }
@@ -73,8 +76,16 @@ class onkyoDevice extends Homey.Device {
       }
       // register a listener for changes in de manager settingss.
       ManagerSettings.on('set', data => {
-        this.setUnavailable();
         eiscp.close();
+        if (DeviceMainIsInUse) {
+          this.setDeviceUnAvaible('main');
+        }
+        if (DeviceZone2IsInUse) {
+          this.setDeviceUnAvaible('zone2');
+        }
+        if (DeviceZone3IsInUse) {
+          this.setDeviceUnAvaible('zone3');
+        }
         this.setSettingsVolumeSliderMax(ManagerSettings.get('maxVolumeSet'), ManagerSettings.get('ReceiverVolumeStep'));
       });
 
@@ -82,27 +93,59 @@ class onkyoDevice extends Homey.Device {
       eiscp.on('timeout', msg => {
         this.log(`Timeout on connection: ${msg}`);
         onkyoSocketConnectionExisted = false;
-        this.setUnavailable();
+        if (DeviceMainIsInUse) {
+          this.setDeviceUnAvaible('main');
+        }
+        if (DeviceZone2IsInUse) {
+          this.setDeviceUnAvaible('zone2');
+        }
+        if (DeviceZone3IsInUse) {
+          this.setDeviceUnAvaible('zone3');
+        }
       });
 
       // When socket is closed
       eiscp.on('close', msg => {
         this.log(`Closing connection to receiver: ${msg}`);
         onkyoSocketConnectionExisted = false;
-        this.setUnavailable();
+        if (DeviceMainIsInUse) {
+          this.setDeviceUnAvaible('main');
+        }
+        if (DeviceZone2IsInUse) {
+          this.setDeviceUnAvaible('zone2');
+        }
+        if (DeviceZone3IsInUse) {
+          this.setDeviceUnAvaible('zone3');
+        }
       });
 
       // When socket trows a error
       eiscp.on('error', msg => {
         this.log(`ERROR: ${msg}`);
         onkyoSocketConnectionExisted = false;
-        this.setUnavailable();
+        if (DeviceMainIsInUse) {
+          this.setDeviceUnAvaible('main');
+        }
+        if (DeviceZone2IsInUse) {
+          this.setDeviceUnAvaible('zone2');
+        }
+        if (DeviceZone3IsInUse) {
+          this.setDeviceUnAvaible('zone3');
+        }
       });
 
       // WHen socket is connected
       eiscp.on('connect', msg => {
         this.log(`Connected to receiver: ${msg}`);
-        this.setAvailable();
+        if (DeviceMainIsInUse) {
+          this.setDeviceAvaible('main');
+        }
+        if (DeviceZone2IsInUse) {
+          this.setDeviceAvaible('zone2');
+        }
+        if (DeviceZone3IsInUse) {
+          this.setDeviceAvaible('zone3');
+        }
       });
 
       // On socket data
@@ -134,6 +177,21 @@ class onkyoDevice extends Homey.Device {
 
   // when device is addded
   onAdded() {
+    switch (this.getDeviceId()) {
+      case 'main':
+        DeviceMainIsInUse = true;
+        this.setDeviceAvaible('main');
+        break;
+      case 'zone2':
+        DeviceZone2IsInUse = true;
+        this.setDeviceAvaible('zone2');
+        break;
+      case 'zone3':
+        DeviceZone3IsInUse = true;
+        this.setDeviceAvaible('zone3');
+        break;
+      default: this.log('no devices in added');
+    }
     this.log(`device added: name = ${this.getName()}, id = ${this.getDeviceId()}`);
   }
 
@@ -158,6 +216,20 @@ class onkyoDevice extends Homey.Device {
     }
   }
 
+  // set Available for devicecards.
+  setDeviceAvaible(zoneNameId) {
+    const driver = ManagerDrivers.getDriver('onkyodriver');
+    const deviceNameId = driver.getDevice({ id: zoneNameId });
+    deviceNameId.setAvailable();
+  }
+
+  // set UnAvailable for devicecards.
+  setDeviceUnAvaible(zoneNameId) {
+    const driver = ManagerDrivers.getDriver('onkyodriver');
+    const deviceNameId = driver.getDevice({ id: zoneNameId });
+    deviceNameId.setUnavailable();
+  }
+
   // get the device ID
   getDeviceId() {
     const deviceID = Object.values(this.getData());
@@ -166,7 +238,6 @@ class onkyoDevice extends Homey.Device {
 
   // Setting the maxvolume setting on volume_set capability to scale and refresh device
   async setSettingsVolumeSliderMax(maxVolumeValue, receiverVolmeStepValue) {
-    await this.setUnavailable();
     if (Number(receiverVolmeStepValue) === 1) {
       this.log(`Change volumesettingslider to step: ${receiverVolmeStepValue} --MaxVolume: ${maxVolumeValue}`);
       receiverVolumeStepVar = 1;
