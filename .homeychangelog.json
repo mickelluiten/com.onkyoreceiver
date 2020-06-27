@@ -19,5 +19,8 @@
   },
   "3.2.5": {
     "en": "Zone2 & zone3 correct init, extra setting for port because other brand receivers"
+  },
+  "3.2.6": {
+    "en": "Debug version for Pioneer"
   }
 }

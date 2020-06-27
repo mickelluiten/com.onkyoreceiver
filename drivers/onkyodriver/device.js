@@ -148,6 +148,10 @@ class onkyoDevice extends Homey.Device {
         }
       });
 
+      // Socket Debug
+      eiscp.on('debug', msg => {
+        this.log(msg);
+      });
       // On socket data
       eiscp.on('data', msg => {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
