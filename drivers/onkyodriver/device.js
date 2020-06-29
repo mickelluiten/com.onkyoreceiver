@@ -14,6 +14,7 @@ let DeviceMainIsInUse = false;
 let DeviceZone2IsInUse = false;
 let DeviceZone3IsInUse = false;
 let receiverVolumeStepVar = 1;
+const debug = true;
 
 class onkyoDevice extends Homey.Device {
 
@@ -149,21 +150,33 @@ class onkyoDevice extends Homey.Device {
       });
 
       // Socket Debug
-      eiscp.on('debug', msg => {
-        this.log(msg);
-      });
+      if (debug) {
+        eiscp.on('debug', msg => {
+          this.log(msg);
+        });
+      }
+
+
       // On socket data
       eiscp.on('data', msg => {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
         const onkyoCmdInputs = Object.values(msg);
-        this.getDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
+        if (typeof onkyoCmdInputs[0] !== 'undefined') {
+          if (!onkyoCmdInputs[0].includes('N/A')) {
+            this.getDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
 
-        // flowcardtrigger
-        const tokens = { OnkyoCommand: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
-        const state = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
-        this.log(`FlowTrigger:  ${JSON.stringify(state)}`);
-        receivecustomcommand.trigger(tokens, state)
-          .catch(this.error);
+            // flowcardtrigger
+            const tokens = { OnkyoCommand: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
+            const state = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
+            this.log(`FlowTrigger:  ${JSON.stringify(state)}`);
+            receivecustomcommand.trigger(tokens, state)
+              .catch(this.error);
+          } else {
+            this.log('Incoming message is N/A');
+          }
+        } else {
+          this.log('Incoming message is undefined');
+        }
       });
     }
   }
@@ -335,53 +348,47 @@ class onkyoDevice extends Homey.Device {
   async getDeviceStateFromReceiver(device, command, argument, eiscpcommand) {
     const driver = ManagerDrivers.getDriver('onkyodriver');
     const deviceNameId = driver.getDevice({ id: device });
-    if (typeof eiscpcommand !== 'undefined') {
-      if (!eiscpcommand.includes('N/A')) {
-        switch (command) {
-          case 'power':
-            if (argument === 'on') {
-              this.log(`Set powerON on devicecard: ${device}`);
-              deviceNameId.setCapabilityValue('onoff', true);
-            } else {
-              this.log(`Set powerOFF on devicecard: ${device}`);
-              deviceNameId.setCapabilityValue('onoff', false);
-            }
-            break;
-
-          case 'muting':
-            if (argument === 'on') {
-              this.log(`Set MuteON on devicecard: ${device}`);
-              deviceNameId.setCapabilityValue('volume_mute', true);
-            } else {
-              this.log(`Set MuteOFF on devicecard: ${device}`);
-              deviceNameId.setCapabilityValue('volume_mute', false);
-            }
-            break;
-
-          case 'volume':
-            this.log(`Changing volume on devicecard ${device}`);
-            deviceNameId.setCapabilityValue('volume_set', argument);
-            break;
-
-          case 'selector':
-            this.log(`Changing input on devicecard ${device}`);
-            if (typeof argument !== 'undefined') {
-              deviceNameId.setCapabilityValue('inputset', argument[0]);
-            }
-            break;
-
-          // bugfix when e.g. spotifyconnect NO pwrON is send by receiver and no selector
-          case 'net-usb-play-status':
-            this.log(`Sending powerOn ${device}`);
-            eiscp.command(`${device}.power=on`);
-            eiscp.command(`${device}.selector=network`);
-            break;
-
-          default: this.log('Not defined change command');
+    switch (command) {
+      case 'power':
+        if (argument === 'on') {
+          this.log(`Set powerON on devicecard: ${device}`);
+          deviceNameId.setCapabilityValue('onoff', true);
+        } else {
+          this.log(`Set powerOFF on devicecard: ${device}`);
+          deviceNameId.setCapabilityValue('onoff', false);
         }
-      } else {
-        this.log('Not defined change command or not supported by receiver');
-      }
+        break;
+
+      case 'muting':
+        if (argument === 'on') {
+          this.log(`Set MuteON on devicecard: ${device}`);
+          deviceNameId.setCapabilityValue('volume_mute', true);
+        } else {
+          this.log(`Set MuteOFF on devicecard: ${device}`);
+          deviceNameId.setCapabilityValue('volume_mute', false);
+        }
+        break;
+
+      case 'volume':
+        this.log(`Changing volume on devicecard ${device}`);
+        deviceNameId.setCapabilityValue('volume_set', argument);
+        break;
+
+      case 'selector':
+        this.log(`Changing input on devicecard ${device}`);
+        if (typeof argument !== 'undefined') {
+          deviceNameId.setCapabilityValue('inputset', argument[0]);
+        }
+        break;
+
+        // bugfix when e.g. spotifyconnect NO pwrON is send by receiver and no selector
+      case 'net-usb-play-status':
+        this.log(`Sending powerOn ${device}`);
+        eiscp.command(`${device}.power=on`);
+        eiscp.command(`${device}.selector=network`);
+        break;
+
+      default: this.log('Not defined change command');
     }
   }
 

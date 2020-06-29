@@ -22,5 +22,11 @@
   },
   "3.2.6": {
     "en": "Debug version for Pioneer"
+  },
+  "3.2.7": {
+    "en": "More debugging for pioneer issue"
+  },
+  "3.2.8": {
+    "en": "Pioneer fix,  zone2, zone3 fix"
   }
 }
