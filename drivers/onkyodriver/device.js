@@ -14,7 +14,7 @@ let DeviceMainIsInUse = false;
 let DeviceZone2IsInUse = false;
 let DeviceZone3IsInUse = false;
 let receiverVolumeStepVar = 1;
-const debug = false;
+const debug = true;
 
 class onkyoDevice extends Homey.Device {
 
@@ -43,19 +43,13 @@ class onkyoDevice extends Homey.Device {
       return Promise.resolve();
     }, 500);
 
-    // register listener for flowcardtriggers
-    const receiveCustomflowTrigger = new Homey.FlowCardTrigger('receivecustomcommand');
-    receiveCustomflowTrigger
-      .registerRunListener(() => {
-        return Promise.resolve();
+    // register listeners for flowcardtriggers
+    const receivecustomcommand = new Homey.FlowCardTrigger('receivecustomcommand');
+    receivecustomcommand
+      .registerRunListener((args, state) => {
+        return Promise.resolve(args.command === state.command);
       })
       .register();
-
-    // Register a global token voor receiveCustomflowTrigger
-    const receiveCustomGlobalToken = new Homey.FlowToken('receivecustomglobaltoken', {
-      title: 'Received-Command',
-    });
-    receiveCustomGlobalToken.register();
 
     // register listeners for flowcardactions
     new Homey.FlowCardAction('sendcustomcommand')
@@ -172,14 +166,19 @@ class onkyoDevice extends Homey.Device {
             this.getDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
 
             // flowcardtrigger
-            const tokens = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
+            const tokens = { OnkyoCommand: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
             const state = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
+<<<<<<< HEAD
             // trigger for receiveCustomflowTrigger
             receiveCustomflowTrigger.trigger()
               .catch(this.error);
             // Token set for received cumstom command
             this.log(`Received custom command for the global token : ${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`);
             receiveCustomGlobalToken.setValue(`${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`)
+=======
+            this.log(`FlowTrigger:  ${JSON.stringify(state)}`);
+            receivecustomcommand.trigger(tokens, state)
+>>>>>>> parent of d37c5b6... 3.2.9
               .catch(this.error);
           } else {
             this.log('Incoming message is N/A');
