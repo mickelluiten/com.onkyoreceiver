@@ -5,14 +5,5 @@
   },
   "hint": {
     "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22"
-  },
-  "args": [
-    {
-       "name": "command",
-       "type": "text",
-       "placeholder": {
-          "en": "Command"
-       }
-    }
- ]
+  }
 }

@@ -170,12 +170,17 @@ class onkyoDevice extends Homey.Device {
             const state = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             // trigger for receiveCustomflowTrigger
             receiveCustomflowTrigger.trigger()
               .catch(this.error);
             // Token set for received cumstom command
             this.log(`Received command for the global token : ${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`);
             receiveCustomGlobalToken.setValue(`${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`)
+=======
+            this.log(`FlowTrigger:  ${JSON.stringify(state)}`);
+            receivecustomcommand.trigger(tokens, state)
+>>>>>>> parent of d37c5b6... 3.2.9
 =======
             this.log(`FlowTrigger:  ${JSON.stringify(state)}`);
             receivecustomcommand.trigger(tokens, state)
