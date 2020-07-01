@@ -1,6 +1,6 @@
 {
   "id": "com.onkyo",
-  "version": "3.2.8",
+  "version": "3.2.9",
   "compatibility": ">=3.1.0",
   "sdk": 2,
   "brandColor": "#8142f5",
@@ -44,17 +44,8 @@
           "en": "Receive a custom command"
         },
         "hint": {
-          "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22"
-        },
-        "args": [
-          {
-            "name": "command",
-            "type": "text",
-            "placeholder": {
-              "en": "Command"
-            }
-          }
-        ]
+          "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22. The command will be placed the Received-Command token."
+        }
       }
     ],
     "actions": [
