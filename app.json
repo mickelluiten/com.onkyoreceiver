@@ -1,10 +1,14 @@
 {
   "id": "com.onkyo",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "version": "3.3.0",
 =======
   "version": "3.2.8",
 >>>>>>> parent of d37c5b6... 3.2.9
+=======
+  "version": "3.2.9",
+>>>>>>> parent of 55c23a7... -
   "compatibility": ">=3.1.0",
   "sdk": 2,
   "brandColor": "#8142f5",
@@ -49,7 +53,11 @@
         },
         "hint": {
 <<<<<<< HEAD
+<<<<<<< HEAD
           "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22. The command will be placed on the Received-Command token."
+=======
+          "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22. The command will be placed the Received-Command token."
+>>>>>>> parent of 55c23a7... -
         }
 =======
           "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22"
