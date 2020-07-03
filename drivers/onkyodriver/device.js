@@ -52,10 +52,15 @@ class onkyoDevice extends Homey.Device {
       .register();
 
     // Register a global token voor receiveCustomflowTrigger
-    const receiveCustomGlobalToken = new Homey.FlowToken('receivecustomglobaltoken', {
+    const receivedCommandToken = new Homey.FlowToken(' receivedCommandToken', {
       title: 'Received-Command',
     });
-    receiveCustomGlobalToken.register();
+    receivedCommandToken.register();
+
+    const receivedValueToken = new Homey.FlowToken(' receivedValueToken', {
+      title: 'Received-Value',
+    });
+    receivedValueToken.register();
 
     // register listeners for flowcardactions
     new Homey.FlowCardAction('sendcustomcommand')
@@ -178,8 +183,10 @@ class onkyoDevice extends Homey.Device {
             receiveCustomflowTrigger.trigger()
               .catch(this.error);
             // Token set for received cumstom command
-            this.log(`Received command for the global token : ${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`);
-            receiveCustomGlobalToken.setValue(`${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`)
+            this.log(`Received command for the global tokens : ${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`);
+            receivedCommandToken.setValue(`${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}`)
+              .catch(this.error);
+            receivedValueToken.setValue(`${onkyoCmdInputs[3]}`)
               .catch(this.error);
           } else {
             this.log('Incoming message is N/A');

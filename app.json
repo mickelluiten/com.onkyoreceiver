@@ -1,6 +1,6 @@
 {
   "id": "com.onkyo",
-  "version": "3.2.9",
+  "version": "3.3.9",
   "compatibility": ">=3.1.0",
   "sdk": 2,
   "brandColor": "#8142f5",
@@ -44,7 +44,7 @@
           "en": "Receive a custom command"
         },
         "hint": {
-          "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22. The command will be placed the Received-Command token."
+          "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22. The command will be placed on the Received-Command token."
         }
       }
     ],
@@ -82,6 +82,22 @@
             "placeholder": {
               "en": "Command"
             }
+          }
+        ]
+      },
+      {
+        "id": "volume_set",
+        "title": {
+          "en": "Set volume to"
+        },
+        "args": [
+          {
+            "name": "volume_set",
+            "type": "range",
+            "min": 0,
+            "step": 1,
+            "label": " ",
+            "labelDecimals": 0
           }
         ]
       }
