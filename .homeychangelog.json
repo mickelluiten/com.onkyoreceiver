@@ -28,5 +28,8 @@
   },
   "3.2.8": {
     "en": "Pioneer fix,  zone2, zone3 fix"
+  },
+  "3.3.0": {
+    "en": "Tokens for incoming events, bugfix on flowaction card volumeset"
   }
 }

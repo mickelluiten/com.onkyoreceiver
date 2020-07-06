@@ -4,6 +4,29 @@
     "en": "Receive a custom command"
   },
   "hint": {
-    "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22. The command will be placed on the Received-Command token."
-  }
+    "en": "Receive a custom command as zoneID.command=argument. For Example main.volume=22. The received command will be placed on 2 tokens. On the token Received-Command the zoneID.command part will be there E.G.:main.volume. On the token Received-Argument the argument will be there E.G.:22. "
+  },
+  "tokens": [
+    {
+      "name": "command",
+      "type": "string",
+      "title": {
+        "en": "Received-Command"
+      },
+      "example": {
+        "en": "main.volume"
+      }
+    },
+    {
+      "name": "argument",
+      "type": "string",
+      "title": {
+        "en": "Received-Argument"
+      },
+      "example": {
+        "en": "22"
+      }
+    }
+  ]
 }
+

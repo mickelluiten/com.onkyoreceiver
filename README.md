@@ -14,7 +14,7 @@ Features
     * IPaddress
     * Port (typical ports used are 60128, 8102 or 23)
     * Maximum volume settings (Maximum volume that will be send to receiver and slider scaling)
-    * Volumestep (for the + and - on the devicecard(s))
+    * Volumestep (for the VolumeUp+ and VolumeDown- on the devicecard(s))
     * Receiver volumestep (some receivers do 0,5 volume steps instead of normal 1 steps)
     
 Sererate devicecards for main zone, zone2 and zone3 (main zone is mandatory)

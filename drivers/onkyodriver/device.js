@@ -37,6 +37,17 @@ class onkyoDevice extends Homey.Device {
     }
     this.log(`device init: name = ${this.getName()}, id = ${this.getDeviceId()}`);
 
+    // Register a global tokens
+    const receivedCommandToken = new Homey.FlowToken('receivedCommandToken', {
+      title: 'Global Received-Command',
+    });
+    receivedCommandToken.register();
+
+    const receivedValueToken = new Homey.FlowToken('receivedValueToken', {
+      title: 'Global Received-Argument',
+    });
+    receivedValueToken.register();
+
     // Register a listener for multiple capability change events
     this.registerMultipleCapabilityListener(['onoff', 'volume_mute', 'volume_set', 'volume_down', 'volume_up', 'inputset'], valueObj => {
       this.setDeviceStateToReceiver(valueObj, this.getDeviceId());
@@ -50,17 +61,6 @@ class onkyoDevice extends Homey.Device {
         return Promise.resolve();
       })
       .register();
-
-    // Register a global token voor receiveCustomflowTrigger
-    const receivedCommandToken = new Homey.FlowToken(' receivedCommandToken', {
-      title: 'Received-Command',
-    });
-    receivedCommandToken.register();
-
-    const receivedValueToken = new Homey.FlowToken(' receivedValueToken', {
-      title: 'Received-Value',
-    });
-    receivedValueToken.register();
 
     // register listeners for flowcardactions
     new Homey.FlowCardAction('sendcustomcommand')
@@ -175,15 +175,14 @@ class onkyoDevice extends Homey.Device {
         if (typeof onkyoCmdInputs[0] !== 'undefined') {
           if (!onkyoCmdInputs[0].includes('N/A')) {
             this.getDeviceStateFromReceiver(onkyoCmdInputs[1], onkyoCmdInputs[2], onkyoCmdInputs[3], onkyoCmdInputs[0]);
-
-            // flowcardtrigger
-            const tokens = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
-            const state = { command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}` };
             // trigger for receiveCustomflowTrigger
-            receiveCustomflowTrigger.trigger()
-              .catch(this.error);
-            // Token set for received cumstom command
-            this.log(`Received command for the global tokens : ${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}=${onkyoCmdInputs[3]}`);
+            const tokens = {
+              command: `${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}`,
+              argument: `${onkyoCmdInputs[3]}`,
+            };
+            receiveCustomflowTrigger.trigger(tokens)
+              .catch(this.error)
+              .then(this.log(`receiveCustomflowTrigger tokens: ${JSON.stringify(tokens)}`));
             receivedCommandToken.setValue(`${onkyoCmdInputs[1]}.${onkyoCmdInputs[2]}`)
               .catch(this.error);
             receivedValueToken.setValue(`${onkyoCmdInputs[3]}`)
@@ -272,17 +271,18 @@ class onkyoDevice extends Homey.Device {
 
   // Setting the maxvolume setting on volume_set capability to scale and refresh device
   async setSettingsVolumeSliderMax(maxVolumeValue, receiverVolmeStepValue) {
+    maxVolumeValue /= 100;
     if (Number(receiverVolmeStepValue) === 1) {
       this.log(`Change volumesettingslider to step: ${receiverVolmeStepValue} --MaxVolume: ${maxVolumeValue}`);
       receiverVolumeStepVar = 1;
       this.setCapabilityOptions('volume_set', {
-        min: 0, max: Number(maxVolumeValue), step: 1, decimals: 0,
+        min: 0, max: Number(maxVolumeValue),
       });
     } else if (Number(receiverVolmeStepValue) === 0.5) {
       this.log(`Change volumesettingslider to step: ${receiverVolmeStepValue} --MaxVolume: ${maxVolumeValue}`);
       receiverVolumeStepVar = 0.5;
       this.setCapabilityOptions('volume_set', {
-        min: 0, max: Number(maxVolumeValue) * 2, step: 1, decimals: 0,
+        min: 0, max: Number(maxVolumeValue) * 2,
       });
     }
   }
@@ -293,7 +293,8 @@ class onkyoDevice extends Homey.Device {
     let volumeUp;
     const valueName = Object.keys(valueObj);
     this.log(`Received state change for deviceID: ${deviceId} -- capabilty: ${valueName[0]} -- value: ${valueObj[valueName]}`);
-    const currentVolume = this.getCapabilityValue('volume_set');
+    let currentVolume = this.getCapabilityValue('volume_set');
+    currentVolume *= 100;
     if (receiverVolumeStepVar === 1) {
       volumeDown = Number(currentVolume) - Number(ManagerSettings.get('volumeStepSet'));
       volumeUp = Number(currentVolume) + Number(ManagerSettings.get('volumeStepSet'));
@@ -349,7 +350,7 @@ class onkyoDevice extends Homey.Device {
 
       case 'volume_set':
         this.log(`Sending VolumeChANGE command to receiver for ${deviceId}`);
-        eiscp.command(`${deviceId}.volume=${valueObj[valueName]}`);
+        eiscp.command(`${deviceId}.volume=${Number(valueObj[valueName]) * 100}`);
         break;
 
       case 'inputset':
@@ -388,7 +389,7 @@ class onkyoDevice extends Homey.Device {
 
       case 'volume':
         this.log(`Changing volume on devicecard ${device}`);
-        deviceNameId.setCapabilityValue('volume_set', argument);
+        deviceNameId.setCapabilityValue('volume_set', Number(argument) / 100);
         break;
 
       case 'selector':
