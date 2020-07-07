@@ -401,9 +401,9 @@ class onkyoDevice extends Homey.Device {
 
         // bugfix when e.g. spotifyconnect NO pwrON is send by receiver and no selector
       case 'net-usb-play-status':
-        this.log(`Sending powerOn ${device}`);
-        eiscp.command(`${device}.power=on`);
-        eiscp.command(`${device}.selector=network`);
+        // this.log(`Sending powerOn ${device}`);
+        eiscp.command(`${device}.power=query`);
+        eiscp.command(`${device}.selector=query`);
         break;
 
       default: this.log('Not defined change command');

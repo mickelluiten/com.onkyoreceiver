@@ -31,5 +31,8 @@
   },
   "3.3.0": {
     "en": "Tokens for incoming events, bugfix on flowaction card volumeset"
+  },
+  "3.3.1": {
+    "en": "Bugfix on autoswitch to net."
   }
 }
