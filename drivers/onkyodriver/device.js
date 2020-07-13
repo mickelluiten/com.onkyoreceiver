@@ -151,6 +151,7 @@ class onkyoDevice extends Homey.Device {
         this.log(`Connected to receiver: ${msg}`);
         if (DeviceMainIsInUse) {
           this.setDeviceAvaible('main');
+          this.socketPoller();
         }
         if (DeviceZone2IsInUse) {
           this.setDeviceAvaible('zone2');
@@ -199,13 +200,22 @@ class onkyoDevice extends Homey.Device {
 
   // socketconnection to receiver
   async socketConnector() {
-    const socketTimer = setInterval(() => {
+    const socketTimerConnector = setInterval(() => {
       if (!onkyoSocketConnectionExisted && !deviceMainIsDeleted) {
         eiscp.connect({ port: Number(ManagerSettings.get('portSettings')), host: ManagerSettings.get('ipAddressSet') });
         onkyoSocketConnectionExisted = true;
         this.log(`Trying to connect to receiver: ${ManagerSettings.get('ipAddressSet')}`);
       }
-    }, 5000);
+    }, 10000);
+  }
+
+  // Socketconnetction keepalive.
+  async socketPoller() {
+    const socketTimerPoller = setInterval(() => {
+      if (onkyoSocketConnectionExisted) {
+        eiscp.command('main.power=query');
+      }
+    }, 15000);
   }
 
   // when device is addded
