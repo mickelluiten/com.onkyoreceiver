@@ -113,7 +113,7 @@
     {
       "id": "onkyodriver",
       "name": {
-        "en": "onkyoDriver"
+        "en": "OnkyoReceiver"
       },
       "class": "amplifier",
       "capabilities": [
