@@ -39,8 +39,3 @@ Flowactions
 * Turn the volume up
 * Send custom command (general flow)
 * Send RAW EISCP command (general flow)
-
-More info on https://community.athom.com/t/app-onkyo-receiver-3-2-8/30554
-
-	
-
