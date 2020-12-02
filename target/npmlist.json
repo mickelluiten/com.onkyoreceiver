@@ -1,0 +1,1 @@
+{"name":"com.receiver","version":"3.0.0","dependencies":{"eiscp":{"version":"0.2.0","dependencies":{"async":{"version":"3.2.0"},"js-yaml":{"version":"3.13.1"}}},"js-yaml":{"version":"3.13.1","dependencies":{"argparse":{"version":"1.0.10","dependencies":{"sprintf-js":{"version":"1.0.3"}}},"esprima":{"version":"4.0.1"}}}}}
