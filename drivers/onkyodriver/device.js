@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 
@@ -305,6 +306,7 @@ class onkyoDevice extends Homey.Device {
     this.log(`Received state change for deviceID: ${deviceId} -- capabilty: ${valueName[0]} -- value: ${valueObj[valueName]}`);
     let currentVolume = this.getCapabilityValue('volume_set');
     currentVolume *= 100;
+    currentVolume = currentVolume.toFixed(0);
     if (receiverVolumeStepVar === 1) {
       volumeDown = Number(currentVolume) - Number(ManagerSettings.get('volumeStepSet'));
       volumeUp = Number(currentVolume) + Number(ManagerSettings.get('volumeStepSet'));
@@ -360,7 +362,10 @@ class onkyoDevice extends Homey.Device {
 
       case 'volume_set':
         this.log(`Sending VolumeChANGE command to receiver for ${deviceId}`);
-        eiscp.command(`${deviceId}.volume=${Number(valueObj[valueName]) * 100}`);
+        let volumeSet = Number(valueObj[valueName]);
+        volumeSet *= 100;
+        volumeSet = volumeSet.toFixed(0);
+        eiscp.command(`${deviceId}.volume=${volumeSet}`);
         break;
 
       case 'inputset':

@@ -40,5 +40,8 @@
   },
   "3.3.3": {
     "en": "Some typos"
+  },
+  "3.3.4": {
+    "en": "Bugfix on volume_set where devices get unavailable"
   }
 }
