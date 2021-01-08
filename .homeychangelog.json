@@ -43,5 +43,8 @@
   },
   "3.3.4": {
     "en": "Bugfix on volume_set where devices get unavailable"
+  },
+  "3.4.4": {
+    "en": "Debug ON.  TX-NR1007 connection problems"
   }
 }

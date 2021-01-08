@@ -15,7 +15,7 @@ let DeviceMainIsInUse = false;
 let DeviceZone2IsInUse = false;
 let DeviceZone3IsInUse = false;
 let receiverVolumeStepVar = 1;
-const debug = false;
+const debug = true;
 
 class onkyoDevice extends Homey.Device {
 
