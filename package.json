@@ -5,13 +5,16 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-athom": "^2.1.0",
-    "homey": "^2.3.3"
+    "homey": "^2.9.7"
   },
   "engines": {
     "node": ">=12.16.1"
   },
   "dependencies": {
-    "eiscp": "^0.2.0",
-    "js-yaml": "^3.13.1"
+    "async": "^3.2.0",
+    "dgram": "^1.0.1",
+    "events": "^3.2.0",
+    "net": "^1.0.2",
+    "util": "^0.12.3"
   }
 }

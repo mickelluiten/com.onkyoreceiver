@@ -1,0 +1,76 @@
+{
+  "_from": "eiscp@^0.2.0",
+  "_id": "eiscp@0.2.0",
+  "_inBundle": false,
+  "_integrity": "sha1-UhfyLwBaNuvvnCbLLWa6L8D+d5c=",
+  "_location": "/eiscp",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "eiscp@^0.2.0",
+    "name": "eiscp",
+    "escapedName": "eiscp",
+    "rawSpec": "^0.2.0",
+    "saveSpec": null,
+    "fetchSpec": "^0.2.0"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/eiscp/-/eiscp-0.2.0.tgz",
+  "_shasum": "5217f22f005a36ebef9c26cb2d66ba2fc0fe7797",
+  "_spec": "eiscp@^0.2.0",
+  "_where": "C:\\Users\\Mickel\\Documents\\GitHub\\com.onkyoreceiver",
+  "bugs": {
+    "url": "https://github.com/estbeetoo/eiscp.js/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Alexander Borovsky",
+      "email": "aborovsky@beetoo.me"
+    },
+    {
+      "name": "Tillbaks",
+      "email": "tillbaks@unknown.com"
+    }
+  ],
+  "dependencies": {
+    "async": "*",
+    "js-yaml": "*"
+  },
+  "deprecated": false,
+  "description": "interface to onkyo (integra) receivers / eiscp protocol",
+  "homepage": "https://github.com/estbeetoo/eiscp.js#readme",
+  "keywords": [
+    "house automation",
+    "onkyo",
+    "integra",
+    "eiscp",
+    "iscp"
+  ],
+  "license": "Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)",
+  "main": "eiscp.js",
+  "maintainers": [
+    {
+      "name": "aborovsky",
+      "email": "aborovsky@beetoo.me"
+    },
+    {
+      "name": "tillbaks",
+      "email": "tillbaks@unknown.com"
+    }
+  ],
+  "name": "eiscp",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/estbeetoo/eiscp.js.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.2.0"
+}

@@ -7,7 +7,7 @@
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
 const { ManagerDrivers } = require('homey');
-const eiscp = require('eiscp');
+const eiscp = require('../../eiscp/eiscp');
 
 let onkyoSocketConnectionExisted = false;
 let deviceMainIsDeleted = false;
