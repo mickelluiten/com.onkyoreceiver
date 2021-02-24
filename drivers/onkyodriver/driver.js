@@ -50,17 +50,6 @@ class onkyoDriver extends Homey.Driver {
       this.log(`Connected with receiver on IP: ${ManagerSettings.get('ipAddressSet')}`);
       onkyoSocketConnected = true;
     });
-
-    /*
-    onkyoSocket.on('data', (data, callback) => {
-    let payLoad = this.eiscpPacket(data);
-    payLoad = data.toString().split('!1');
-    payLoad = JSON.stringify(payLoad[1]);
-    payLoad = payLoad.split('\\u');
-    payLoad = payLoad[0].substring(1);
-    this.log(`Received data from receiver: ${payLoad}`);
-        });
-    */
   }
 
 
