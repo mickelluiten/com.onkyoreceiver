@@ -3,6 +3,9 @@
   "title": {
     "en": "Send a custom command"
   },
+  "titleFormatted": {
+    "en": "Send a custom command [[command]]"
+  },
   "hint": {
     "en": "Send a custom command as zoneID.command=argument. For Example main.volume=22"
   },

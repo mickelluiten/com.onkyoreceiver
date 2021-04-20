@@ -3,6 +3,9 @@
   "title": {
     "en": "Send a RAW EISCP command"
   },
+  "titleFormatted": {
+    "en": "Send a RAW EISCP command [[command]]"
+  },
   "hint": {
     "en": "Send a RAW EISCP command as PWR00 for poweroff"
   },

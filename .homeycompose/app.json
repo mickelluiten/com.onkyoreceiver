@@ -1,0 +1,55 @@
+{
+"id": "com.onkyo",
+"version": "3.4.7",
+"compatibility": ">=3.1.0",
+"sdk": 2,
+"brandColor": "#8142f5",
+"homeyCommunityTopicId": 30554,
+"support": "mailto:mickelluiten@gmail.com",
+"source": "https://github.com/mickelluiten/com.onkyoreceiver",
+"name": {
+  "en": "Onkyo Receiver"
+},
+"tags": {
+  "en": [
+    "Onkyo",
+    "Receiver",
+    "Amplifier",
+    "Pioneer",
+    "vsx"
+  ]
+},
+"dependencies": {
+  "net": "*"
+},
+"description": {
+  "en": "Control your sound at home"
+},
+"category": [
+  "appliances"
+],
+"permissions": [],
+"images": {
+  "large": "/assets/images/large.jpg",
+  "small": "/assets/images/small.jpg"
+},
+"author": {
+  "name": "Mickel Luiten",
+  "email": "mickelluiten@gmail.com"
+},
+"contributors": {
+  "developers": [
+    {
+      "name": "Mickel Luiten",
+      "email": "mickelluiten@gmail.com"
+    }
+  ]
+},
+"contributing": {
+  "donate": {
+    "paypal": {
+      "username": "mickelluiten"
+    }
+  }
+ }
+}

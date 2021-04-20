@@ -52,5 +52,8 @@
   },
   "3.4.6": {
     "en": "Old receivers discovery bug solved"
+  },
+  "3.4.7": {
+    "en": "Adding tags and donate in app.json"
   }
 }
