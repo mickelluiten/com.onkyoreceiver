@@ -1,4 +1,4 @@
-Control your Onkyo network-enabled receiver using the Homey by Athom B.V.
+Control your Onkyo network-enabled receiver.
 Some Pioneer receivers will also work.
   
 Features

@@ -3,7 +3,6 @@
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
 
-
 class onkyoApp extends Homey.App {
 
   onInit() {
@@ -13,7 +12,6 @@ class onkyoApp extends Homey.App {
     this.log(`ManagerSettings: -- ReceiverVolumestep: ${ManagerSettings.get('ReceiverVolumeStep')}`);
     this.log(`ManagerSettings: -- maxVolume: ${ManagerSettings.get('maxVolumeSet')}`);
     this.log(`ManagerSettings: -- volumeStep: ${ManagerSettings.get('volumeStepSet')}`);
-
   }
 
 }
