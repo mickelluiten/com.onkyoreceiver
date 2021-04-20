@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 
 'use strict';
 
@@ -7,7 +8,6 @@ const { ManagerSettings } = require('homey');
 
 let onkyoSocket = {};
 let onkyoSocketConnected = false;
-
 
 class onkyoDriver extends Homey.Driver {
 
@@ -23,7 +23,6 @@ class onkyoDriver extends Homey.Driver {
       this.log(`Volume Step: ${ManagerSettings.get('volumeStepSet')}`);
     });
   }
-
 
   // create and open the socket
   socketConnection(settings) {
@@ -51,7 +50,6 @@ class onkyoDriver extends Homey.Driver {
       onkyoSocketConnected = true;
     });
   }
-
 
   eiscpPacket(cmd) {
     const cmdLength = cmd.length + 1;
@@ -110,6 +108,5 @@ class onkyoDriver extends Homey.Driver {
   }
 
 }
-
 
 module.exports = onkyoDriver;

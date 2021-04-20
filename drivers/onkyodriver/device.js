@@ -170,7 +170,6 @@ class onkyoDevice extends Homey.Device {
         });
       }
 
-
       // On socket data
       eiscp.on('data', msg => {
         this.log(`Incoming message from receiver: ${JSON.stringify(msg)}`);
@@ -237,12 +236,12 @@ class onkyoDevice extends Homey.Device {
         break;
       default: this.log('no devices in added');
     }
-    this.log(`device added: name = ${this.getName()}, id = ${this.getDeviceId()}`);
+    this.log(`Device added: name = ${this.getName()}, id = ${this.getDeviceId()}`);
   }
 
   // when device is deleted
   onDeleted() {
-    this.log(`device deleted: name = ${this.getName()}, id = ${this.getDeviceId()}`);
+    this.log(`Device deleted: name = ${this.getName()}, id = ${this.getDeviceId()}`);
     // when deviceard main is deleted stop socketconnection
     switch (this.getDeviceId()) {
       case 'main':
@@ -426,7 +425,7 @@ class onkyoDevice extends Homey.Device {
     }
   }
 
-  // on reciverpowerOn get current status from receiver
+  // on receiverpowerOn get current status from receiver
   async getReceiverstate() {
     if (DeviceMainIsInUse) {
       eiscp.command('main.selector=query');
@@ -442,7 +441,6 @@ class onkyoDevice extends Homey.Device {
       eiscp.command('zone3.volume=query');
     }
   }
-
 
 }
 
